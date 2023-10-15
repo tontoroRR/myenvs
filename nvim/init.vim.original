@@ -1,0 +1,51 @@
+set enc=utf-8
+
+let mapleader = ","
+
+set nocp "no-compatible
+
+" line number
+set nu
+
+set hls "highlight search
+set sm "showmatch
+set ml "modeline
+
+" tab/indent/space
+set et "expandtab
+set ts=2 "tabstop
+set sw=2 "shiftwidth
+set sts=2 "softtabstop
+
+" backup
+set nobackup
+
+" syntax/filetype
+syntax on
+filetype on
+filetype indent on
+filetype plugin on
+
+" shortcut 
+nmap <Leader>w [window]
+
+nnoremap <silent> <Leader><Leader> :call SourceConfig()<cr>
+
+nnoremap [window]h <C-w>h
+nnoremap [window]j <C-w>j
+nnoremap [window]k <C-w>k
+nnoremap [window]l <C-w>l
+
+" function
+if (!exists('*SourceConfig'))
+  function SourceConfig() abort
+    " Your path will probably be different
+    for f in split(glob('~/.config/nvim/autoload/*'), '\n')
+      exe 'source' f
+    endfor
+
+    source $MYVIMRC
+  endfunction
+endif
+
+echo "init.vim loaded."
