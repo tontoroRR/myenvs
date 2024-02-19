@@ -1,5 +1,5 @@
 -- efm-langserver
--- scoop/apps/nvim/init.lua
+
 local options = {
   encoding = "utf-8",
   fileencoding = "utf-8",
@@ -30,13 +30,15 @@ local options = {
   splitright = true,
 }
 
+-- set colorscheme
 vim.cmd.colorscheme 'habamax'
+vim.cmd([[highlight Search guifg=#c0856b guibg=#661d05]]) -- fg=chocolate_cream, bg=chocolate_rose
 
 for k, v in pairs(options) do
 	vim.opt[k] = v
 end
 
-vim.g.mapleader = " "
+vim.g.mapleader = ";"
 
 -- key mapping
 function map_keys (ary_km, cmd) 
@@ -75,12 +77,14 @@ local global_keymaps = {
   {'<M-S-k>', '<C-w>+'}, -- km
   {'<M-S-j>', '<C-w>-'}, -- km
   {'<M-S-l>', '<C-w>>'}, -- km
-  {[[<M-\>]], ':vsplit<return>'}, -- km
-  {[[<M-->]], ':split<return>'}, -- km
+  {[[<M-\>]], ':vsplit<CR>'}, -- km
+  {[[<M-->]], ':split<CR>'}, -- km
   {[[<M-S-->]], '<C-w>='}, -- km
   {'<C-[>', '<Esc>'}, -- km
+  -- tab ops
+  {'<M-d>', ':tabnext<CR>'}, --km
   -- remove highlight
-  {'zz', ':nohlsearch<return>'}, -- km
+  {'zz', ':nohlsearch<CR>'}, -- km
   -- test
   -- {'v', 'y', ':w !clip.exe<return><return>'}, -- km
   {'<leader>fb', ':e#<CR>' }, -- km
@@ -135,14 +139,15 @@ require("lazy").setup({
       }
     end
   },
+  { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
   { 'tpope/vim-scriptease' },
   { 
     'neoclide/coc.nvim',
     branch = 'release',
     config = function()
       m = {
-        { 'gd', '<Plug>(coc-definition)' }, -- km
-        { 'gt', '<Plug>(coc-type-definition)' }, -- km
+        { 'gd', '<Plug>(coc-definition)<Esc>z.' }, -- km
+        { 'gt', '<Plug>(coc-type-definition)<Esc>z.' }, -- km
         { 'gr', '<plug>(coc-references)' }, -- km
       }
       map_keys(m, vim.keymap.set)
@@ -196,19 +201,47 @@ require("lazy").setup({
       map_keys(m, vim.keymap.set)
     end
   },
-  -- { 'nvim-treesitter/nvim-treesitter', { 'do', ':TSUpdate' } },
-  -- { 'nvim-treesitter/nvim-treesitter-context' },
-  { 'wellle/context.vim' },
-  { 'sindrets/diffview.nvim' },
-  { 'mfussenegger/nvim-dap',
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-    },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
+    build = ':TSUpdate',
+    config = function()
+      if vim.loop.os_uname().sysname == 'Linux' then
+        local configs = require('nvim-treesitter.configs')
+        configs.setup({
+          ensure_installed = { 'lua', 'python', 'yaml', 'json', 'markdown' },
+          sync_install = false,
+          highlight = { enable = true },
+          indent = { enable = true },
+        })
+      end
+    end
   },
+  { 'sindrets/diffview.nvim',
+    config = function ()
+      print("aaa")
+      require('diffview').setup({
+        -- 思った通りに動かない
+        --[[
+        keymaps = {
+          view = {
+            {'n', "<C-n>", actions.select_next_entry,}, -- "<tab>",
+            {'n', "<C-p>", actions.select_prev_entry,}, -- "<tab>",
+            -- ["<C-p>"] = "<S-tab>",
+            -- { "n", "<tab>", "<C-w>w" },
+            -- { "n", "<S-tab>", false },
+          }
+        }
+        ]]
+      })
+    end
+  },
+  { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
   { 'nvim-telescope/telescope-file-browser.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
       'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter'
+      'nvim-treesitter/nvim-treesitter',
     },
     config = function()
       require('telescope').setup()
@@ -218,8 +251,21 @@ require("lazy").setup({
         {'<Leader>tg', plug.live_grep}, -- km
         {'<Leader>tb', plug.buffers}, -- km
         {'<Leader>th', plug.help_tags}, --km
+        {'<Leader>td', plug.lsp_type_definitions}, -- km
       }
       map_keys(m, vim.keymap.set)
+    end
+  },
+  {
+    'fannheyward/telescope-coc.nvim',
+    config = function ()
+      require('telescope').setup ({
+        coc = {
+          theme = 'ivy',
+          prefer_locations = true,
+        }
+      })
+      require('telescope').load_extension('coc')
     end
   },
   {
@@ -228,13 +274,15 @@ require("lazy").setup({
     ft = { 'markdown' },
     build = function() vim.fn['mkdp#util#install']() end,
   },
-  { 'lambdalisue/suda.vim' },
+  { 'lambdalisue/suda.vim' }, -- sudo Write/Read
   { 'akinsho/toggleterm.nvim', version = "*", opts = {},
     config = function ()
       require('toggleterm').setup()
       m = {
         { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
+        { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
         { '<Leader>dt', string.format(":ToggleTerm direction=tab<CR>") }, --km
+        { '<Leader>df', string.format(":ToggleTerm direction=float<CR>") }, --km
         { 't', '<C-[>', [[<C-\><C-n>]] }, -- km
       }
       map_keys(m)
@@ -248,6 +296,15 @@ require("lazy").setup({
     end,
     opts = {}
   },
+  {
+    'krischik/vim-tail',
+    config = function ()
+      vim.g.Tail_Height = 10
+      vim.g.Tail_Center_Win = 1
+    end
+  },
+  { 'nvie/vim-flake8', ft = 'python', },
+  { 'tell-k/vim-autopep8', ft = 'python', },
   --[[
   { 'jrop/mongo.nvim' },
   { 'Shougo/deol.nvim',
@@ -331,3 +388,15 @@ end
 
 vim.api.nvim_create_user_command('BlinkCursor', blink_cursor, {})
 
+-- autocmd for python
+vim.api.nvim_create_autocmd( {'BufEnter', 'FileType'}, {
+  callback = function ()
+    if vim.bo.filetype == 'python' then
+      vim.keymap.set('n', '<Leader>pp', ':call Autopep8()<CR>', {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>pf', ':Flake<CR>', {noremap = true, silent = true})
+    else
+      vim.keymap.set('n', '<Leader>pp', '') --, {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>pf', '')
+    end
+  end,
+})
