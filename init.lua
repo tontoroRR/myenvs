@@ -1,5 +1,4 @@
 -- efm-langserver
-
 local options = {
 	encoding = "utf-8",
 	fileencoding = "utf-8",
@@ -253,26 +252,36 @@ end,
         {'<Leader>td', plug.lsp_type_definitions}, -- km
       }
       map_keys(m, vim.keymap.set)
+      local default_grep_arguments = {
+        "rg",
+        "--follow",        -- Follow symbolic links
+        "--hidden",        -- Search for hidden files
+        "--no-heading",    -- Don't group matches by each file
+        "--with-filename", -- Print the file path with the matched lines
+        "--line-number",   -- Show line numbers
+        "--column",        -- Show column numbers
+        "--smart-case",    -- Smart case search
+
+        -- Exclude some patterns from search
+        "--glob=!**/.git/*",
+        "--glob=!**/__pycache__/*",
+      }
       local default_picker = {
         hidden = true,
         no_ignore = true,
         no_ignore_parent = true,
+        find_command = {
+          "rg",
+          "--files",        -- Follow symbolic links
+          "--hidden",        -- Search for hidden files
+          "--glob=!**/.git/*",
+          "--glob=!**/__pycache__/*",
+          "--glob=!**/*.png",
+        },
       }
       require('telescope').setup({
         defaults = {
-          vimgrep_arguments = {
-            "rg",
-            "--follow",        -- Follow symbolic links
-            "--hidden",        -- Search for hidden files
-            "--no-heading",    -- Don't group matches by each file
-            "--with-filename", -- Print the file path with the matched lines
-            "--line-number",   -- Show line numbers
-            "--column",        -- Show column numbers
-            "--smart-case",    -- Smart case search
-
-            -- Exclude some patterns from search
-            "--glob=!**/.git/*",
-          },
+          vimgrep_arguments = default_grep_arguments,
         },
         pickers = {
           find_files = default_picker,
