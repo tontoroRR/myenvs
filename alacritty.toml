@@ -1,0 +1,47 @@
+# working-directory = "None"
+
+[env]
+TERM = "alacritty"
+
+[font]
+size = 10
+
+[font.bold]
+style = "Bold"
+
+[font.bold_italic]
+style = "Bold Italic"
+
+#[font.cursor]
+# cursor = "CellForeground"
+#text = "CellBackground"
+
+[font.italic]
+style = "Italic"
+
+[font.normal]
+family = "Hack Nerd Font Mono"
+
+[font.offset]
+# bright_foreground = "#eaeaea"
+# dim_foreground = "#828482"
+x = 0
+y = 0
+
+[scrolling]
+history = 100000
+
+[shell]
+program = "pwsh.exe"
+
+[window.dimensions]
+columns = 158
+lines = 65
+
+[window.padding]
+x = 6
+y = 6
+
+[window.position]
+x = -6
+y = 0
