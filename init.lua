@@ -1,5 +1,4 @@
 -- efm-langserver
--- set ts:2
 local options = {
 	encoding = "utf-8",
 	fileencoding = "utf-8",
