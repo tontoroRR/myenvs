@@ -1,4 +1,5 @@
 -- efm-langserver
+
 local options = {
 	encoding = "utf-8",
 	fileencoding = "utf-8",
@@ -223,7 +224,6 @@ end,
   },
   { 'sindrets/diffview.nvim',
   config = function ()
-	  print("aaa")
 	  require('diffview').setup({
 		  -- 思った通りに動かない
 		  --[[
@@ -241,24 +241,54 @@ end,
   end
   },
   { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
-  { 'nvim-telescope/telescope-file-browser.nvim',
-  dependencies = {
-	  'nvim-telescope/telescope.nvim',
-	  'nvim-lua/plenary.nvim',
-	  'nvim-treesitter/nvim-treesitter',
+  { 
+    'nvim-telescope/telescope.nvim',
+    config = function()
+      local plug = require('telescope.builtin')
+      m = {
+        {'<Leader>tf', plug.find_files}, -- km
+        {'<Leader>tg', plug.live_grep}, -- km
+        {'<Leader>tb', plug.buffers}, -- km
+        {'<Leader>th', plug.help_tags}, --km
+        {'<Leader>td', plug.lsp_type_definitions}, -- km
+      }
+      map_keys(m, vim.keymap.set)
+      local default_picker = {
+        hidden = true,
+        no_ignore = true,
+        no_ignore_parent = true,
+      }
+      require('telescope').setup({
+        defaults = {
+          vimgrep_arguments = {
+            "rg",
+            "--follow",        -- Follow symbolic links
+            "--hidden",        -- Search for hidden files
+            "--no-heading",    -- Don't group matches by each file
+            "--with-filename", -- Print the file path with the matched lines
+            "--line-number",   -- Show line numbers
+            "--column",        -- Show column numbers
+            "--smart-case",    -- Smart case search
+
+            -- Exclude some patterns from search
+            "--glob=!**/.git/*",
+          },
+        },
+        pickers = {
+          find_files = default_picker,
+          live_grep = default_picker,
+          buffers = default_picker,
+        },
+      })
+    end
   },
-  config = function()
-	  require('telescope').setup()
-	  local plug = require('telescope.builtin')
-	  m = {
-		  {'<Leader>tf', plug.find_files}, -- km
-		  {'<Leader>tg', plug.live_grep}, -- km
-		  {'<Leader>tb', plug.buffers}, -- km
-		  {'<Leader>th', plug.help_tags}, --km
-		  {'<Leader>td', plug.lsp_type_definitions}, -- km
-	  }
-	  map_keys(m, vim.keymap.set)
-  end
+  {
+    'nvim-telescope/telescope-file-browser.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
   },
   {
 	  'fannheyward/telescope-coc.nvim',
