@@ -12,5 +12,8 @@ trim_trailing_whitespace = true
 [*.{js,jsx,html,sass}]
 indent_size = 4
 
+[*.py]
+indent_size = 8
+
 [*.md]
 trim_trailing_whitespace = false
