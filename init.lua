@@ -130,90 +130,106 @@ vim.opt.rtp:prepend(lazypath)
 
 -- plugins
 require("lazy").setup({
-	{ 'nvim-lualine/lualine.nvim', 
-	dependencies = { 'nvim-tree/nvim-web-devicons' },
-	config = function ()
-		require('lualine').setup {
-			options = {
-				globalstatus = true,
-			},
-			sections = {
-				lualine_a = { {'filename', file_status = true, path = 2 } },
-			},
-		}
-	end
-},
-{ 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
-{ 'tpope/vim-scriptease' },
-{ 
-	'neoclide/coc.nvim',
-	branch = 'release',
-	config = function()
-		m = {
-			{ 'gd', '<Plug>(coc-definition)<Esc>z.' }, -- km
-			{ 'gt', '<Plug>(coc-type-definition)<Esc>z.' }, -- km
-			{ 'gr', '<plug>(coc-references)' }, -- km
-		}
-		map_keys(m, vim.keymap.set)
-	end
-},
-{ 'nvim-neo-tree/neo-tree.nvim', 
-branch = 'v3.x',
-dependencies = {
-	'nvim-lua/plenary.nvim',
-	"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-	"MunifTanjim/nui.nvim",
-	-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-},
-config = function()
-	vim.api.nvim_create_augroup("neotree", {})
-	vim.api.nvim_create_autocmd("BufEnter", {
-		group = "neotree",
-		command = "set nornu nu",
-	})
-	vim.api.nvim_create_autocmd("UiEnter", {
-		desc = "Open Neotree automatically",
-		group = "neotree",
-		callback = function()
-			if vim.fn.argc() == 0 then
-				vim.cmd "set nornu nonu | Neotree toggle"
-			end
-		end,
-	})
-end,
-  },
-  { 'junegunn/fzf', dir = "~/.fzf", build = "./install --all",
-  enabled = function() return jit.os == 'Linux' end
-  },
-  { 'junegunn/fzf.vim',
-  enabled = function() return jit.os == 'Linux' end
-  },
-  { 'antoinemadec/coc-fzf',
-  enabled = function() return jit.os == 'Linux' end
-  },
-  { 'ktunprasert/gui-font-resize.nvim',
-  config = function()
-	  require('gui-font-resize').setup({
-		  default_size = 9.5,
-		  bounds = { maximum = 50, minimum = 4 }
-	  })
-	  m = {
-		  {'<leader>gj', ":GUIFontSizeDown<CR>" }, -- km
-		  {'<leader>gk', ":GUIFontSizeUp<CR>" }, -- km
-		  {'<leader>g0', ":GUIFontSizeSet<CR>"}, -- km
-	  }
-	  map_keys(m, vim.keymap.set)
-  end
+	{
+    'nvim-lualine/lualine.nvim', 
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function ()
+      require('lualine').setup {
+        options = {
+          globalstatus = true,
+        },
+        sections = {
+          lualine_a = { {'filename', file_status = true, path = 2 } },
+        },
+      }
+    end
   },
   {
-	  'nvim-treesitter/nvim-treesitter',
-	  dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
-	  build = ':TSUpdate',
-	  config = function()
-		  if vim.loop.os_uname().sysname == 'Linux' then
-			  local configs = require('nvim-treesitter.configs')
-			  configs.setup({
-				  ensure_installed = { 'lua', 'python', 'yaml', 'json', 'markdown' },
+    'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {},
+    event = 'VeryLazy', -- lz
+  },
+  {
+    'tpope/vim-scriptease', 'neoclide/coc.nvim',
+  },
+  { 
+    'neoclide/coc.nvim',
+    event = 'VeryLazy', -- lz
+    branch = 'release',
+    config = function()
+      m = {
+        { 'gd', '<Plug>(coc-definition)<Esc>z.' }, -- km
+        { 'gt', '<Plug>(coc-type-definition)<Esc>z.' }, -- km
+        { 'gr', '<plug>(coc-references)' }, -- km
+      }
+      map_keys(m, vim.keymap.set)
+    end
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim', 
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    config = function()
+      vim.api.nvim_create_augroup("neotree", {})
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = "neotree",
+        command = "set nornu nu",
+      })
+      vim.api.nvim_create_autocmd("UiEnter", {
+        desc = "Open Neotree automatically",
+        group = "neotree",
+        callback = function()
+          if vim.fn.argc() == 0 then
+            vim.cmd "set nornu nonu | Neotree toggle"
+          end
+        end,
+      })
+    end,
+  },
+  {
+    'junegunn/fzf', dir = "~/.fzf", build = "./install --all",
+    event = 'VeryLazy', -- lz
+    enabled = function() return jit.os == 'Linux' end
+  },
+  {
+    'junegunn/fzf.vim',
+    event = 'VeryLazy', -- lz
+    enabled = function() return jit.os == 'Linux' end
+  },
+  {
+    'antoinemadec/coc-fzf',
+    event = 'VeryLazy', -- lz
+    enabled = function() return jit.os == 'Linux' end
+  },
+  {
+    'ktunprasert/gui-font-resize.nvim',
+    event = 'VeryLazy', -- lz
+    config = function()
+      require('gui-font-resize').setup({
+        default_size = 9.5,
+        bounds = { maximum = 50, minimum = 4 }
+      })
+      m = {
+        {'<leader>gj', ":GUIFontSizeDown<CR>" }, -- km
+        {'<leader>gk', ":GUIFontSizeUp<CR>" }, -- km
+        {'<leader>g0', ":GUIFontSizeSet<CR>"}, -- km
+      }
+      map_keys(m, vim.keymap.set)
+    end
+  },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
+    build = ':TSUpdate',
+    config = function()
+      if vim.loop.os_uname().sysname == 'Linux' then
+        local configs = require('nvim-treesitter.configs')
+        configs.setup({
+          ensure_installed = { 'lua', 'python', 'yaml', 'json', 'markdown' },
 				  sync_install = false,
 				  highlight = { enable = true },
 				  indent = { enable = true },
@@ -221,9 +237,11 @@ end,
 		  end
 	  end
   },
-  { 'sindrets/diffview.nvim',
-  config = function ()
-	  require('diffview').setup({
+  {
+    'sindrets/diffview.nvim',
+    event = 'VeryLazy', -- lz
+    config = function ()
+      require('diffview').setup({
 		  -- 思った通りに動かない
 		  --[[
 		  keymaps = {
@@ -236,12 +254,13 @@ end,
 		  }
 		  }
 		  ]]
-	  })
-  end
+	    })
+    end
   },
   { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
   { 
     'nvim-telescope/telescope.nvim',
+    event = 'VeryLazy', -- lz
     config = function()
       local plug = require('telescope.builtin')
       m = {
@@ -293,6 +312,7 @@ end,
   },
   {
     'nvim-telescope/telescope-file-browser.nvim',
+    event = 'VeryLazy', -- lz
     dependencies = {
       'nvim-telescope/telescope.nvim',
       'nvim-lua/plenary.nvim',
@@ -301,6 +321,7 @@ end,
   },
   {
 	  'fannheyward/telescope-coc.nvim',
+    event = 'VeryLazy', -- lz
 	  config = function ()
 		  require('telescope').setup ({
 			  coc = {
@@ -313,26 +334,28 @@ end,
   },
   {
 	  'iamcco/markdown-preview.nvim',
+    event = 'VeryLazy', -- lz
 	  cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
 	  ft = { 'markdown' },
 	  build = function() vim.fn['mkdp#util#install']() end,
   },
-  { 'lambdalisue/suda.vim' }, -- sudo Write/Read
+  { 'lambdalisue/suda.vim', event = 'VeryLazy' }, -- sudo Write/Read -- lz
   { 'akinsho/toggleterm.nvim', version = "*", opts = {},
-  config = function ()
-	  require('toggleterm').setup()
-	  m = {
-		  { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
-		  { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
-		  { '<Leader>dt', string.format(":ToggleTerm direction=tab<CR>") }, --km
-		  { '<Leader>df', string.format(":ToggleTerm direction=float<CR>") }, --km
-		  { 't', '<C-[>', [[<C-\><C-n>]] }, -- km
-	  }
-	  map_keys(m)
-  end
+    event = 'VeryLazy', -- lz
+    config = function ()
+      require('toggleterm').setup()
+      m = {
+        { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
+        { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
+        { '<Leader>dt', string.format(":ToggleTerm direction=tab<CR>") }, --km
+        { '<Leader>df', string.format(":ToggleTerm direction=float<CR>") }, --km
+        { 't', '<C-[>', [[<C-\><C-n>]] }, -- km
+      }
+      map_keys(m)
+    end
   },
   {
-	  'folke/which-key.nvim', event = 'VeryLazy',
+	  'folke/which-key.nvim', event = 'VeryLazy', -- lz
 	  init = function()
 		  vim.o.timeout = true
 		  vim.o.timeoutlen = 500
@@ -341,13 +364,22 @@ end,
   },
   {
 	  'krischik/vim-tail',
+    event = 'VeryLazy', -- lz
 	  config = function ()
 		  vim.g.Tail_Height = 10
 		  vim.g.Tail_Center_Win = 1
 	  end
   },
-  { 'nvie/vim-flake8', ft = 'python', },
-  { 'tell-k/vim-autopep8', ft = 'python', },
+  {
+    'nvie/vim-flake8',
+    event = 'VeryLazy', -- lz
+    ft = 'python',
+  },
+  {
+    'tell-k/vim-autopep8',
+    event = 'VeryLazy', -- lz
+    ft = 'python',
+  },
   {
     'nvim-focus/focus.nvim', version = '*',
     config = function ()
@@ -374,21 +406,25 @@ end,
             end
           end,
           desc = 'Disable focus autoresize for BufType',
-        })
+      })
 
-        vim.api.nvim_create_autocmd('FileType', {
-          group = augroup,
-          callback = function(_)
-            if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
-              vim.b.focus_disable = true
-            else
-              vim.b.focus_disable = false
-            end
-          end,
-          desc = 'Disable focus autoresize for FileType',
-        })
-      end
-    },
+      vim.api.nvim_create_autocmd('FileType', {
+        group = augroup,
+        callback = function(_)
+          if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
+            vim.b.focus_disable = true
+          else
+            vim.b.focus_disable = false
+          end
+        end,
+        desc = 'Disable focus autoresize for FileType',
+      })
+    end
+  },
+  {
+    'dstein64/vim-startuptime',
+    event = 'VeryLazy', -- lz
+  },
   --[[
   { 'jrop/mongo.nvim' },
   { 'Shougo/deol.nvim',
@@ -473,14 +509,18 @@ end
 vim.api.nvim_create_user_command('BlinkCursor', blink_cursor, {})
 
 -- autocmd for python
-vim.api.nvim_create_autocmd( {'BufEnter', 'FileType'}, {
-	callback = function ()
-		if vim.bo.filetype == 'python' then
-			vim.keymap.set('n', '<Leader>pp', ':call Autopep8()<CR>', {noremap = true, silent = true})
-			vim.keymap.set('n', '<Leader>pf', ':Flake<CR>', {noremap = true, silent = true})
-		else
-			vim.keymap.set('n', '<Leader>pp', '') --, {noremap = true, silent = true})
-			vim.keymap.set('n', '<Leader>pf', '')
-		end
-	end,
+vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
+  callback = function ()
+    if vim.bo.filetype == 'python' then
+      vim.keymap.set('n', '<Leader>pp', ':call Autopep8()<CR>', {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>pf', ':Flake<CR>', {noremap = true, silent = true})
+    else
+      vim.keymap.set('n', '<Leader>pp', '') --, {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>pf', '')
+    end
+  end,
+})
+vim.api.nvim_create_autocmd({ 'BufWrite' }, {
+    pattern = '*.py',
+    command = ':Flake',
 })
