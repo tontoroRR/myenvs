@@ -1,4 +1,5 @@
 -- efm-langserver
+
 local options = {
 	encoding = "utf-8",
 	fileencoding = "utf-8",
@@ -8,6 +9,7 @@ local options = {
 	hlsearch = true,
 	ignorecase = true,
 	wrap = false,
+  swapfile = false,
 	smartindent = true,
 	termguicolors = true,
 	syntax = 'on',
@@ -21,7 +23,8 @@ local options = {
 	number = true,
 	cursorline = true,
 
-	guifont = "HackGen35 Console NF:h9.5",
+	guifont = "Maple Mono NF:h9.5",
+	-- guifont = "HackGen35 Console NF:h9.5",
 	-- "UDEV Gothic 35NFLG:h10",
 	-- "MS_Gothic:h10",
 	-- "Hack Nerd Font Mono:h9.5",
@@ -91,7 +94,7 @@ local global_keymaps = {
 	{'zz', ':nohlsearch<CR>'}, -- km
 	-- test
 	-- {'v', 'y', ':w !clip.exe<return><return>'}, -- km
-	{'<leader>fb', ':e#<CR>' }, -- km
+	{'<leader><Space>', ':e#<CR>' }, -- km
 	{'<leader>fo', ':tab split<CR>' }, -- km
 	{'<leader><leader>', ':BlinkCursor<CR>' }, -- km
 }
@@ -99,7 +102,8 @@ map_keys(global_keymaps)
 
 -- clipboard
 -- if vim.fn.has('wsl') == 1 then
-vim.opt.clipboard:append{'unnamedplus'}
+-- vim.opt.clipboard:append{'unnamedplus'} -- deferred-clipboardで設定するからここでは不要
+--[[
 vim.g.clipboard = {
 	name = 'clip',
 	copy = {
@@ -112,6 +116,7 @@ vim.g.clipboard = {
 	},
 	cache_enable = 0,
 }
+]]
 
 -- lazy.vim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -196,11 +201,6 @@ require("lazy").setup({
     enabled = function() return jit.os == 'Linux' end
   },
   {
-    'junegunn/fzf.vim',
-    event = 'VeryLazy', -- lz
-    enabled = function() return jit.os == 'Linux' end
-  },
-  {
     'antoinemadec/coc-fzf',
     event = 'VeryLazy', -- lz
     enabled = function() return jit.os == 'Linux' end
@@ -261,14 +261,23 @@ require("lazy").setup({
   { 
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy', -- lz
+    dependencies = {
+      'nvim-telescope/telescope-file-browser.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'jvgrootveld/telescope-zoxide',
+    },
     config = function()
       local plug = require('telescope.builtin')
+      local exts = require('telescope').extensions
       m = {
         {'<Leader>tf', plug.find_files}, -- km
         {'<Leader>tg', plug.live_grep}, -- km
         {'<Leader>tb', plug.buffers}, -- km
         {'<Leader>th', plug.help_tags}, --km
         {'<Leader>td', plug.lsp_type_definitions}, -- km
+        {'<Leader>tz', exts.zoxide.list}, -- km
+        {'<Leader>tis', plug.git_status}, -- km
       }
       map_keys(m, vim.keymap.set)
       local default_grep_arguments = {
@@ -310,6 +319,7 @@ require("lazy").setup({
       })
     end
   },
+  --[[
   {
     'nvim-telescope/telescope-file-browser.nvim',
     event = 'VeryLazy', -- lz
@@ -319,6 +329,7 @@ require("lazy").setup({
       'nvim-treesitter/nvim-treesitter',
     },
   },
+  ]]
   {
 	  'fannheyward/telescope-coc.nvim',
     event = 'VeryLazy', -- lz
@@ -345,11 +356,12 @@ require("lazy").setup({
     config = function ()
       require('toggleterm').setup()
       m = {
-        { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
-        { '<Leader>do', string.format(":ToggleTerm<CR>") }, --km
-        { '<Leader>dt', string.format(":ToggleTerm direction=tab<CR>") }, --km
-        { '<Leader>df', string.format(":ToggleTerm direction=float<CR>") }, --km
+        { '<Leader>so', string.format(":ToggleTerm<CR>") }, --km
+        { '<Leader>so', string.format(":ToggleTerm<CR>") }, --km
+        { '<Leader>st', string.format(":ToggleTerm direction=tab<CR>") }, --km
+        { '<Leader>sf', string.format(":ToggleTerm direction=float<CR>") }, --km
         { 't', '<C-[>', [[<C-\><C-n>]] }, -- km
+        { 't', '<M-d>', '<ESC>:tabnext<CR>'}, --km
       }
       map_keys(m)
     end
@@ -424,6 +436,46 @@ require("lazy").setup({
   {
     'dstein64/vim-startuptime',
     event = 'VeryLazy', -- lz
+  },
+  {
+    'kensyo/nvim-scrlbkun',
+    config = function()
+      require('scrlbkun').setup()
+    end,
+  },
+  {
+    'EtiamNullam/deferred-clipboard.nvim',
+    event = 'VeryLazy', -- lz
+    config = function()
+      require('deferred-clipboard').setup {
+        fallback = 'unnamedplus',
+        lazy = true,
+      }
+      vim.g.clipboard = {
+        name = 'clip',
+        copy = {
+          ['+'] = 'win32yank.exe -i --crlf',
+          ['*'] = 'win32yank.exe -i --crlf',
+        },
+        paste = {
+          ['+'] = 'win32yank.exe -o --lf',
+          ['*'] = 'win32yank.exe -o --lf',
+        },
+        cache_enable = 0,
+      }
+
+    end
+  },
+  {
+    'RaafatTurki/hex.nvim',
+    event = 'VeryLazy', -- lz
+    config = function()
+      require('hex').setup({})
+    end
+  },
+  {
+    'xiyaowong/transparent.nvim',
+
   },
   --[[
   { 'jrop/mongo.nvim' },
