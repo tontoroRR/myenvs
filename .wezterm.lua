@@ -1,7 +1,7 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
-local app_path = 'D:\\Users\\masaaki\\scoop\\apps\\wezterm\\current\\'
+local app_path = 'D:\\Users\\(myname)\\scoop\\apps\\wezterm\\current\\'
 
 local grey_radial = {
   colors = { 'grey', 'slategrey' },
