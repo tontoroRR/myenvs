@@ -1,5 +1,12 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
+local mux = wezterm.mux
+
+-- position and size
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = mux.spawn_window(cmd or {width=158, height=56})
+  window:gui_window():set_position(0,0)
+end)
 
 local app_path = 'D:\\Users\\(myname)\\scoop\\apps\\wezterm\\current\\'
 
