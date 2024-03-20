@@ -101,22 +101,7 @@ local global_keymaps = {
 map_keys(global_keymaps)
 
 -- clipboard
--- if vim.fn.has('wsl') == 1 then
--- vim.opt.clipboard:append{'unnamedplus'} -- deferred-clipboardで設定するからここでは不要
---[[
-vim.g.clipboard = {
-	name = 'clip',
-	copy = {
-		['+'] = 'win32yank.exe -i --crlf',
-		['*'] = 'win32yank.exe -i --crlf',
-	},
-	paste = {
-		['+'] = 'win32yank.exe -o --lf',
-		['*'] = 'win32yank.exe -o --lf',
-	},
-	cache_enable = 0,
-}
-]]
+-- deferred-clipboardで設定する
 
 -- lazy.vim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -202,26 +187,6 @@ require("lazy").setup({
           end
         end,
       })
-      --[[
-      require("neo-tree").setup({
-        filesystem = {
-          window = {
-            mappings = {
-              ["<leader>p"] = "image_wezterm", -- " or another map
-            },
-          },
-          commands = {
-            image_wezterm = function(state)
-              local node = state.tree:get_node()
-              print(node.path)
-              if node.type == "file" then
-                require("image_preview").PreviewImage(node.path)
-              end
-            end,
-          },
-        },
-      })
-      ]]
     end,
   },
   {
@@ -345,18 +310,6 @@ require("lazy").setup({
   {
     'willothy/wezterm.nvim',
     config = true,
-  },
-  {
-    'VonHeikemen/fine-cmdline.nvim',
-    dependencies = { 'MunifTanjim/nui.nvim'},
-    config = function ()
-      m = {
-        {':', '<cmd>FineCmdline<CR>'},
-        {'/', '<cmd>FineCmdline<CR>/'},
-        {'<CR>', ':'},
-      }
-      map_keys(m)
-    end
   },
   {
 	  'fannheyward/telescope-coc.nvim',
@@ -501,47 +454,8 @@ require("lazy").setup({
       require('hex').setup({})
     end
   },
-  {
-    'xiyaowong/transparent.nvim',
-
-  },
+  { 'xiyaowong/transparent.nvim', event = 'VeryLazy', },
   --[[
-  { 'jrop/mongo.nvim' },
-  { 'Shougo/deol.nvim',
-  config = function ()
-  local cmd = 'pwsh'
-  if vim.loop.os_uname().sysname == 'Linux' then
-  cmd = "bash"
-  end
-  m = {
-  { '<Leader>do', string.format(":call deol#start({'command': '%s', 'split': 'floating'})<CR>", cmd)}, -- km
-  -- {'<Leader>, string.format([[:call deol#edit({'command': '%s', 'split': 'floating'})<return>]\], cmd)}, -- km
-  { '<Leader>ds', string.format(":call deol#start({'command': '%s', 'split': 'horizontal'})<CR>", cmd) }, -- km
-  { 't', '<C-[>', [[<C-\><C-n>]\] }, -- km
-  { 't', '<M-d>', [[<C-\><C-n><S-tab>]\] }, -- km
-  { 't', '<C-tab>', [[<C-\><C-n><S-tab>]\] }, -- km
-  }
-  map_keys(m)
-  end
-  },
-  {
-  'thibthib18/mongo-nvim',
-  config = function()
-  require('mongo-nvim').setup({
-  -- connection string to your mongodb
-  connection_string = "mongodb://127.0.0.1:27017",
-  -- key to use for previewing/picking documents
-  -- either a string or custom table of string or functions
-  list_document_key = "_id",
-  -- delete selected document in document_picker
-  delete_document_mapping = nil, -- "<c-d>"
-  })
-  m = {
-  {'<Leader>dbl', ':require("mongo-nvim.telescope.pickers").database_picker()<CR>'}, -- km
-  }
-  map_keys(m, vim.keymap.set)
-  end
-  },
   { 'sheerun/vim-polyglot' },
   { 'rust-lang/rust.vim' },
   { 'simrat39/rust-tools.nvim',
@@ -561,14 +475,6 @@ require("lazy").setup({
   stopOnEntry = false,
   args = {}
   }
-  },
-  { 'theniceboy/vim-calc',
-  config = function()
-  m = {
-  {'<Leader>a', string.format([[:call Calc()<CR>]/], cmd)}
-  }
-  map_keys(m)
-  end
   },
   ]]
 })
