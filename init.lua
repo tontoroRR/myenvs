@@ -169,13 +169,22 @@ require("lazy").setup({
       map_keys(m, vim.keymap.set)
     end
   },
+  --[[
+  {
+      'adelarsq/image_preview.nvim',
+      event = 'VeryLazy',
+      config = function()
+        require('image_preview').setup()
+      end
+  },
+  ]]
   {
     'nvim-neo-tree/neo-tree.nvim', 
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-      "MunifTanjim/nui.nvim",
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
       -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
     },
     config = function()
@@ -193,6 +202,26 @@ require("lazy").setup({
           end
         end,
       })
+      --[[
+      require("neo-tree").setup({
+        filesystem = {
+          window = {
+            mappings = {
+              ["<leader>p"] = "image_wezterm", -- " or another map
+            },
+          },
+          commands = {
+            image_wezterm = function(state)
+              local node = state.tree:get_node()
+              print(node.path)
+              if node.type == "file" then
+                require("image_preview").PreviewImage(node.path)
+              end
+            end,
+          },
+        },
+      })
+      ]]
     end,
   },
   {
@@ -235,27 +264,10 @@ require("lazy").setup({
 				  indent = { enable = true },
 			  })
 		  end
+      -- fold
+      vim.wo.foldmethod = 'expr'
+      vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 	  end
-  },
-  {
-    'sindrets/diffview.nvim',
-    event = 'VeryLazy', -- lz
-    config = function ()
-      require('diffview').setup({
-		  -- 思った通りに動かない
-		  --[[
-		  keymaps = {
-		  view = {
-		  {'n', "<C-n>", actions.select_next_entry,}, -- "<tab>",
-		  {'n', "<C-p>", actions.select_prev_entry,}, -- "<tab>",
-		  -- ["<C-p>"] = "<S-tab>",
-		  -- { "n", "<tab>", "<C-w>w" },
-		  -- { "n", "<S-tab>", false },
-		  }
-		  }
-		  ]]
-	    })
-    end
   },
   { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
   { 
@@ -330,6 +342,22 @@ require("lazy").setup({
     },
   },
   ]]
+  {
+    'willothy/wezterm.nvim',
+    config = true,
+  },
+  {
+    'VonHeikemen/fine-cmdline.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim'},
+    config = function ()
+      m = {
+        {':', '<cmd>FineCmdline<CR>'},
+        {'/', '<cmd>FineCmdline<CR>/'},
+        {'<CR>', ':'},
+      }
+      map_keys(m)
+    end
+  },
   {
 	  'fannheyward/telescope-coc.nvim',
     event = 'VeryLazy', -- lz
