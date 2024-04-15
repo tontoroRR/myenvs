@@ -5,6 +5,7 @@ local options = {
 	fileencoding = "utf-8",
 	-- encodings = "utf-8,euc-jp,sjis",
 	fileencodings = "utf-8,euc-jp,sjis",
+  fileformats = 'unix,dos',
 	backup = false,
 	hlsearch = true,
 	ignorecase = true,
@@ -24,10 +25,6 @@ local options = {
 	cursorline = true,
 
 	guifont = "Maple Mono NF:h9.5",
-	-- guifont = "HackGen35 Console NF:h9.5",
-	-- "UDEV Gothic 35NFLG:h10",
-	-- "MS_Gothic:h10",
-	-- "Hack Nerd Font Mono:h9.5",
 	splitbelow = true,
 	splitright = true,
 }
@@ -187,6 +184,16 @@ require("lazy").setup({
           end
         end,
       })
+      require('neo-tree').setup({
+        window = {
+          mappings = {
+            ['e'] = function() vim.api.nvim_exec('Neotree focus filesystem left', true) end,
+            ['b'] = function() vim.api.nvim_exec('Neotree focus buffers left', true) end,
+            ['g'] = function() vim.api.nvim_exec('Neotree focus git_status left', true) end,
+            ['..'] = function() vim.api.nvim_exec('cd ..', true) end,
+          },
+        },
+      })
     end,
   },
   {
@@ -217,20 +224,26 @@ require("lazy").setup({
   },
   {
     'nvim-treesitter/nvim-treesitter',
-    dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-context',
+      { 'nushell/tree-sitter-nu' },
+    },
+    event = 'VeryLazy',
     build = ':TSUpdate',
     config = function()
       if vim.loop.os_uname().sysname == 'Linux' then
         local configs = require('nvim-treesitter.configs')
         configs.setup({
-          ensure_installed = { 'lua', 'python', 'yaml', 'json', 'markdown' },
+          ensure_installed = { 'nu', 'json', 'vim', 'lua', 'python', 'yaml', 'json', 'markdown' },
 				  sync_install = false,
-				  highlight = { enable = true },
+				  highlight = {
+            enable = true,
+          },
 				  indent = { enable = true },
 			  })
 		  end
       -- fold
-      vim.wo.foldmethod = 'expr'
+      vim.o.foldmethod = 'expr'
       vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 	  end
   },
@@ -239,22 +252,28 @@ require("lazy").setup({
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy', -- lz
     dependencies = {
-      'nvim-telescope/telescope-file-browser.nvim',
+      -- 'nvim-telescope/telescope-file-browser.nvim',
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
       'jvgrootveld/telescope-zoxide',
+      'LukasPietzschmann/telescope-tabs',
     },
     config = function()
       local plug = require('telescope.builtin')
       local exts = require('telescope').extensions
+      require('telescope').load_extension 'telescope-tabs'
+      local tabs = require('telescope-tabs')
+
       m = {
-        {'<Leader>tf', plug.find_files}, -- km
-        {'<Leader>tg', plug.live_grep}, -- km
-        {'<Leader>tb', plug.buffers}, -- km
-        {'<Leader>th', plug.help_tags}, --km
-        {'<Leader>td', plug.lsp_type_definitions}, -- km
-        {'<Leader>tz', exts.zoxide.list}, -- km
+        {'<Leader>tb',  plug.buffers}, -- km
+        {'<Leader>td',  plug.lsp_type_definitions}, -- km
+        {'<Leader>tf',  plug.find_files}, -- km
+        {'<Leader>tg',  plug.live_grep}, -- km
+        {'<Leader>th',  plug.help_tags}, --km
         {'<Leader>tis', plug.git_status}, -- km
+        {'<Leader>to',  plug.oldfiles}, -- km
+        {'<Leader>tt',  tabs.list_tabs}, -- km exts.'telescope-tabs'.list_tabs()
+        {'<Leader>tz',  exts.zoxide.list}, -- km
       }
       map_keys(m, vim.keymap.set)
       local default_grep_arguments = {
@@ -296,24 +315,40 @@ require("lazy").setup({
       })
     end
   },
-  --[[
+  { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', },
+  -- { 'willothy/wezterm.nvim', config = true, },
   {
-    'nvim-telescope/telescope-file-browser.nvim',
-    event = 'VeryLazy', -- lz
-    dependencies = {
-      'nvim-telescope/telescope.nvim',
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
-    },
+    'stevearc/profile.nvim',
+    config = function ()
+      local should_profile = os.getenv("NVIM_PROFILE")
+      if should_profile then
+        require("profile").instrument_autocmds()
+        if should_profile:lower():match("^start") then
+          require("profile").start("*")
+        else
+          require("profile").instrument("*")
+        end
+      end
+
+      local function toggle_profile()
+        local prof = require("profile")
+        if prof.is_recording() then
+          prof.stop()
+          vim.ui.input({ prompt = "Save profile to:", completion = "file", default = "profile.json" }, function(filename)
+            if filename then
+              prof.export(filename)
+              vim.notify(string.format("Wrote %s", filename))
+            end
+          end)
+        else
+          prof.start("*")
+        end
+      end
+      vim.keymap.set("", "<Leader>p", toggle_profile)
+    end
   },
-  ]]
   {
-    'willothy/wezterm.nvim',
-    config = true,
-  },
-  {
-	  'fannheyward/telescope-coc.nvim',
-    event = 'VeryLazy', -- lz
+    'fannheyward/telescope-coc.nvim',
 	  config = function ()
 		  require('telescope').setup ({
 			  coc = {
@@ -325,11 +360,38 @@ require("lazy").setup({
 	  end
   },
   {
-	  'iamcco/markdown-preview.nvim',
+    'tontoroRR/cder.nvim',
+    branch = 'support_windows',
     event = 'VeryLazy', -- lz
-	  cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-	  ft = { 'markdown' },
-	  build = function() vim.fn['mkdp#util#install']() end,
+    config = function ()
+      m = {
+        {'<Leader>tc',  ':Telescope cder<CR>'}, -- km
+      }
+      map_keys(m, vim.keymap.set)
+      local fd_param = '--type directory --type symlink --exclude .git'
+      if vim.loop.os_uname().sysname == 'Windows_NT' then
+        require('telescope').setup({
+          extensions = {
+            cder = {
+              command_executer = { 'cmd.exe', '/c' },
+              previewer_command = 'eza -a -F --icons --color -1', -- uutils ls -a',
+              pager_commnd = 'bat --plain --paging=always --pager="less -RS"',
+              dir_command = { 'fd.exe', '--type=d', '--type=l', '.', },
+            }
+          },
+        })
+      else
+        require('telescope').setup({
+          extensions = {
+            cder = {
+              dir_command = { 'fdfind', '--type=d', '--type=l', '--exclude=.git', '.', },
+              previewer_command = 'exa -a --icons --color=auto -F -1',
+            },
+          },
+        })
+      end
+      require('telescope').load_extension 'cder'
+    end
   },
   { 'lambdalisue/suda.vim', event = 'VeryLazy' }, -- sudo Write/Read -- lz
   { 'akinsho/toggleterm.nvim', version = "*", opts = {},
@@ -345,6 +407,8 @@ require("lazy").setup({
         { 't', '<M-d>', '<ESC>:tabnext<CR>'}, --km
       }
       map_keys(m)
+      local powershell_options = {
+      }
     end
   },
   {
@@ -363,16 +427,8 @@ require("lazy").setup({
 		  vim.g.Tail_Center_Win = 1
 	  end
   },
-  {
-    'nvie/vim-flake8',
-    event = 'VeryLazy', -- lz
-    ft = 'python',
-  },
-  {
-    'tell-k/vim-autopep8',
-    event = 'VeryLazy', -- lz
-    ft = 'python',
-  },
+  { 'nvie/vim-flake8', event = 'VeryLazy', ft = 'python', }, -- lz
+  { 'tell-k/vim-autopep8', event = 'VeryLazy', ft = 'python', },-- lz
   {
     'nvim-focus/focus.nvim', version = '*',
     config = function ()
@@ -454,7 +510,30 @@ require("lazy").setup({
       require('hex').setup({})
     end
   },
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  },
   { 'xiyaowong/transparent.nvim', event = 'VeryLazy', },
+  {
+    'tontoroRR/oil.nvim',
+    branch = 'support_windows',
+    event = 'VeryLazy',
+    config = function()
+      require('oil').setup()
+      m = {
+        { '<Leader>o', ':Oil --float .<CR>' }, -- km
+      }
+      map_keys(m, vim.keymap.set)
+    end,
+  },
+  -- TODO: LAST OF PLUGIN
+  -- { 'andweeb/presence.nvim', event = 'VeryLazy', },
   --[[
   { 'sheerun/vim-polyglot' },
   { 'rust-lang/rust.vim' },
@@ -492,7 +571,16 @@ function blink_cursor()
 	end
 end
 
+--[[
+function xxx()
+  local buf = vim.api.nvim_buf_get_name(0)
+  local profile = 'D:\Users\masaaki\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+  -- local 
+end
+]]
+
 vim.api.nvim_create_user_command('BlinkCursor', blink_cursor, {})
+-- vim.api.nvim_create_user_command('EditProfile', edit_profile, {})
 
 -- autocmd for python
 vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
@@ -510,3 +598,21 @@ vim.api.nvim_create_autocmd({ 'BufWrite' }, {
     pattern = '*.py',
     command = ':Flake',
 })
+
+-- Use powershell for windows
+if vim.loop.os_uname().sysname == 'Windows_NT' then
+  local pwsh_options = {
+    shell = vim.fn.executable "pwsh" == 1 and "pwsh" or "powershell",
+    shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+    shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+    shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+    shellquote = "",
+    shellxquote = "",
+  }
+
+  --[[
+  for k, v in pairs(pwsh_options) do
+    vim.opt[k] = v
+  end
+  ]]
+end
