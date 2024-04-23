@@ -197,6 +197,13 @@ require("lazy").setup({
     end,
   },
   {
+    'lewis6991/gitsigns.nvim',
+    event = 'VeryLazy', -- lz
+    config = function()
+      require('gitsigns').setup({})
+    end,
+  },
+  {
     'junegunn/fzf', dir = "~/.fzf", build = "./install --all",
     event = 'VeryLazy', -- lz
     enabled = function() return jit.os == 'Linux' end
@@ -522,7 +529,7 @@ require("lazy").setup({
   { 'xiyaowong/transparent.nvim', event = 'VeryLazy', },
   {
     'tontoroRR/oil.nvim',
-    branch = 'support_windows',
+    -- branch = 'support_windows',
     event = 'VeryLazy',
     config = function()
       require('oil').setup()
