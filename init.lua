@@ -151,15 +151,6 @@ require("lazy").setup({
       map_keys(m, vim.keymap.set)
     end
   },
-  --[[
-  {
-      'adelarsq/image_preview.nvim',
-      event = 'VeryLazy',
-      config = function()
-        require('image_preview').setup()
-      end
-  },
-  ]]
   {
     'nvim-neo-tree/neo-tree.nvim', 
     branch = 'v3.x',
@@ -323,7 +314,6 @@ require("lazy").setup({
     end
   },
   { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', },
-  -- { 'willothy/wezterm.nvim', config = true, },
   {
     'stevearc/profile.nvim',
     config = function ()
@@ -527,6 +517,7 @@ require("lazy").setup({
     ft = { "markdown" },
   },
   { 'xiyaowong/transparent.nvim', event = 'VeryLazy', },
+  { 'famiu/nvim-reload', event = 'VeryLazy', },
   {
     'tontoroRR/oil.nvim',
     -- branch = 'support_windows',
@@ -544,23 +535,24 @@ require("lazy").setup({
   --[[
   { 'sheerun/vim-polyglot' },
   { 'rust-lang/rust.vim' },
+  { 'feline-nvim/feline.nvim', },
   { 'simrat39/rust-tools.nvim',
-  dependencies = { 'neovim/nvim-lspconfig',
-  '
-  },
+    dependencies = { 'neovim/nvim-lspconfig',
+    '
+    },
   },
   { 'mfussenegger/nvim-dap',
-  dap.configurations.rust = {
-  name = "Rust Debug",
-  type = "lldb",
-  request = "launch",
-  program = function ()
-  return vim.fn.input('', vim.fn.getcwd() .. '/', 'file')
-  end,
-  cwd = '{workspaceFolder}'
-  stopOnEntry = false,
-  args = {}
-  }
+    dap.configurations.rust = {
+      name = "Rust Debug",
+      type = "lldb",
+      request = "launch",
+      program = function ()
+      return vim.fn.input('', vim.fn.getcwd() .. '/', 'file')
+      end,
+      cwd = '{workspaceFolder}'
+      stopOnEntry = false,
+      args = {}
+    }
   },
   ]]
 })
