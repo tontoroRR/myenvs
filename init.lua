@@ -93,7 +93,7 @@ local global_keymaps = {
 	-- {'v', 'y', ':w !clip.exe<return><return>'}, -- km
 	{'<leader><Space>', ':e#<CR>' }, -- km
 	{'<leader>fo', ':tab split<CR>' }, -- km
-	{'<leader><leader>', ':BlinkCursor<CR>' }, -- km
+	-- {'<leader><leader>', ':BlinkCursor<CR>' }, -- km
 }
 map_keys(global_keymaps)
 
@@ -191,7 +191,8 @@ require("lazy").setup({
     'lewis6991/gitsigns.nvim',
     event = 'VeryLazy', -- lz
     config = function()
-      require('gitsigns').setup({})
+      require('gitsigns').setup {
+      }
     end,
   },
   {
@@ -519,6 +520,15 @@ require("lazy").setup({
   { 'xiyaowong/transparent.nvim', event = 'VeryLazy', },
   { 'famiu/nvim-reload', event = 'VeryLazy', },
   {
+    'famiu/bufdelete.nvim',
+    config = function()
+      m = {
+        { '<Leader>d', ':Bdelete<CR>' }, --km
+      }
+      map_keys(m)
+    end
+  },
+  {
     'tontoroRR/oil.nvim',
     -- branch = 'support_windows',
     event = 'VeryLazy',
@@ -528,6 +538,59 @@ require("lazy").setup({
         { '<Leader>o', ':Oil --float .<CR>' }, -- km
       }
       map_keys(m, vim.keymap.set)
+    end,
+  },
+  {
+    'j-morano/buffer_manager.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', },
+    event = 'VeryLazy',
+    config = function()
+      local opts = {noremap = true}
+      local map = vim.keymap.set
+      -- Setup
+      require('buffer_manager').setup({
+        select_menu_item_commands = {
+          v = { key = '<C-v>', command = 'vsplit' },
+          h = { key = '<C-h>', command = 'split' },
+        },
+      })
+      -- Navigate buffers bypassing the menu
+      local bmui = require("buffer_manager.ui")
+      local keys = '1234567890'
+      for i = 1, #keys do
+        local key = keys:sub(i,i)
+        map('n', string.format('<leader>%s', key),
+        function () bmui.nav_file(i) end,
+        opts
+        )
+      end
+      -- Just the menu
+      map({ 't', 'n' }, '<Leader>;', bmui.toggle_quick_menu, opts)
+      -- Open menu and search
+      map({ 't', 'n' }, '<Leader>:', function ()
+        bmui.toggle_quick_menu()
+        -- wait for the menu to open
+        vim.defer_fn(function ()
+          vim.fn.feedkeys('/')
+        end, 50)
+      end, opts)
+      -- Next/Prev
+      map('n', '<M-j>', bmui.nav_next, opts)
+      map('n', '<M-k>', bmui.nav_prev, opts)
+      -- Reorder buffers
+      -- vim.api.nvim_command([[
+      -- autocmd FileType buffer_manager vnoremap J :m '>+1<CR>gv=gv
+      -- autocmd FileType buffer_manager vnoremap K :m '>-2<CR>gv=gv
+      -- ]])
+      vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
+        callback = function()
+          print(vim.bo.filetype)
+          if vim.bo.filetype == 'buffer_manager' then
+            vim.keymap.set('n', '<M-j>', ":m '>+1<CR>gv=gv", {noremap = true, silent = true})
+            vim.keymap.set('n', '<M-k>', ":m '>-2<CR>gv=gv", {noremap = true, silent = true})
+          end
+        end,
+      })
     end,
   },
   -- TODO: LAST OF PLUGIN
@@ -587,9 +650,11 @@ vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
     if vim.bo.filetype == 'python' then
       vim.keymap.set('n', '<Leader>pp', ':call Autopep8()<CR>', {noremap = true, silent = true})
       vim.keymap.set('n', '<Leader>pf', ':Flake<CR>', {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>px', ':w!<CR>:split|ter python %<CR>a', {noremap = true, silent = true})
     else
-      vim.keymap.set('n', '<Leader>pp', '') --, {noremap = true, silent = true})
+      vim.keymap.set('n', '<Leader>pp', '')
       vim.keymap.set('n', '<Leader>pf', '')
+      vim.keymap.set('n', '<Leader>px', '')
     end
   end,
 })
