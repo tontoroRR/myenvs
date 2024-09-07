@@ -30,7 +30,7 @@ local options = {
 }
 
 -- set python
-vim.g.python3_host_prog = ''
+vim.g.python3_host_prog = '/home/tontoro/.asdf/shims/python3'
 
 -- set colorscheme
 vim.cmd.colorscheme 'habamax'
@@ -196,16 +196,6 @@ require("lazy").setup({
       require('gitsigns').setup {
       }
     end,
-  },
-  {
-    'junegunn/fzf', dir = "~/.fzf", build = "./install --all",
-    event = 'VeryLazy', -- lz
-    enabled = function() return jit.os == 'Linux' end
-  },
-  {
-    'antoinemadec/coc-fzf',
-    event = 'VeryLazy', -- lz
-    enabled = function() return jit.os == 'Linux' end
   },
   {
     'ktunprasert/gui-font-resize.nvim',
@@ -412,7 +402,9 @@ require("lazy").setup({
     end
   },
   {
-	  'folke/which-key.nvim', event = 'VeryLazy', -- lz
+	  'folke/which-key.nvim',
+    dependencies = { 'echasnovski/mini.icons', version = false },
+    event = 'VeryLazy', -- lz
 	  init = function()
 		  vim.o.timeout = true
 		  vim.o.timeoutlen = 500
@@ -488,34 +480,18 @@ require("lazy").setup({
         fallback = 'unnamedplus',
         lazy = true,
       }
-      if vim.loop.os_uname().sysname == 'Windows_NT' then
-        vim.g.clipboard = {
-          name = 'clip',
-          copy = {
-            ['+'] = 'win32yank.exe -i --crlf',
-            ['*'] = 'win32yank.exe -i --crlf',
-          },
-          paste = {
-            ['+'] = 'win32yank.exe -o --lf',
-            ['*'] = 'win32yank.exe -o --lf',
-          },
-          cache_enable = 0,
-        }
-      else
-        vim.g.clipboard = {
-          name = 'clip',
-          copy = {
-            ['+'] = 'xclip -i',
-            ['*'] = 'xclip -i',
-          },
-          paste = {
-            ['+'] = 'xclip -o',
-            ['*'] = 'xclip -o',
-          },
-          cache_enable = 0,
-        }
-      end
-
+      vim.g.clipboard = {
+        name = 'clip',
+        copy = {
+          ['+'] = 'win32yank.exe -i --crlf',
+          ['*'] = 'win32yank.exe -i --crlf',
+        },
+        paste = {
+          ['+'] = 'win32yank.exe -o --lf',
+          ['*'] = 'win32yank.exe -o --lf',
+        },
+        cache_enable = 0,
+      }
     end
   },
   {
@@ -635,6 +611,18 @@ require("lazy").setup({
     }
   },
   ]]
+  --[[
+  {
+    'junegunn/fzf',
+    dir = "~/.fzf",
+    build = "./install --all",
+  },
+  { 'junegunn/fzf.vim' },
+  {
+    'antoinemadec/coc-fzf',
+    event = 'VeryLazy',
+  },
+  ]]--
 })
 
 -- User defined commands
