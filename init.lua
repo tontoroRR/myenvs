@@ -29,6 +29,8 @@ local options = {
 	splitright = true,
 }
 
+-- set python
+vim.g.python3_host_prog = ''
 
 -- set colorscheme
 vim.cmd.colorscheme 'habamax'
@@ -486,18 +488,33 @@ require("lazy").setup({
         fallback = 'unnamedplus',
         lazy = true,
       }
-      vim.g.clipboard = {
-        name = 'clip',
-        copy = {
-          ['+'] = 'win32yank.exe -i --crlf',
-          ['*'] = 'win32yank.exe -i --crlf',
-        },
-        paste = {
-          ['+'] = 'win32yank.exe -o --lf',
-          ['*'] = 'win32yank.exe -o --lf',
-        },
-        cache_enable = 0,
-      }
+      if vim.loop.os_uname().sysname == 'Windows_NT' then
+        vim.g.clipboard = {
+          name = 'clip',
+          copy = {
+            ['+'] = 'win32yank.exe -i --crlf',
+            ['*'] = 'win32yank.exe -i --crlf',
+          },
+          paste = {
+            ['+'] = 'win32yank.exe -o --lf',
+            ['*'] = 'win32yank.exe -o --lf',
+          },
+          cache_enable = 0,
+        }
+      else
+        vim.g.clipboard = {
+          name = 'clip',
+          copy = {
+            ['+'] = 'xclip -i',
+            ['*'] = 'xclip -i',
+          },
+          paste = {
+            ['+'] = 'xclip -o',
+            ['*'] = 'xclip -o',
+          },
+          cache_enable = 0,
+        }
+      end
 
     end
   },
@@ -584,7 +601,7 @@ require("lazy").setup({
       -- ]])
       vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
         callback = function()
-          print(vim.bo.filetype)
+          -- print(vim.bo.filetype)
           if vim.bo.filetype == 'buffer_manager' then
             vim.keymap.set('n', '<M-j>', ":m '>+1<CR>gv=gv", {noremap = true, silent = true})
             vim.keymap.set('n', '<M-k>', ":m '>-2<CR>gv=gv", {noremap = true, silent = true})
