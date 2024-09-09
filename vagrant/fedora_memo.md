@@ -63,3 +63,23 @@ vcxsrv -multiwindow -acで起動しておく
    * tree-sitter
    * cocではなく、DAPを使うようにする
 3. dockerをいれる
+
+### Maple Mono フォントの導入
+1.  wget https://github.com/subframe7536/maple-font/releases/download/v7.0-beta26/MapleMono-NF-CN.zip
+2.  unzip MapleMono-NF-CN.zip
+3.  sudo mkdir -p /usr/local/share/fonts/maplemono
+4.  sudo mv MapleMono* /usr/local/share/fonts/maplemono/.
+5.  sudo mv config.json LICENCE.txt /usr/local/share/fonts/maplemono/.
+6.  sudo fc-cache -v
+7.  fc-list | grep maple
+
+### xterm
+1. インストールは `sudo dnf install xterm`
+2. キーレイアウトが英語（"じゃなくて@になるとか）なので、 setxkbmap jp すると治る
+   * localectlでは治らない
+3. 
+
+### Wayland (KDE Plamsa6）の導入
+1. sudo dnf upgrade --refresh
+2. sudo dnf groupinstall "KDE Plasma Workspaces"
+3. sudo dnf upgrade --refresh
