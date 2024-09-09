@@ -5,6 +5,13 @@ invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 # install apps
 scoop install git
 scoop bucket add extras
-scoop install neovim fzf zoxide sudo which ripgrep wget python
+scoop install neovim zoxide sudo which ripgrep wget python
 
-まだ途中
+# まだ途中
+if (-not (Test-Path $profile)) {
+  New-Item -path $profile -type file –force
+}
+echo "Invoke-Expression (& { (zoxide init powershell | Out-String) })" >> $profile
+
+# fzfはこのあたり参考に https://zenn.dev/mebiusbox/articles/b922c7e6ded49a したいが難しすぎてよくわからない
+
