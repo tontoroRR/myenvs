@@ -77,3 +77,8 @@ sudo mv config.json LICENCE.txt /usr/local/share/fonts/maplemono/.
 sudo fc-cache -v
 fc-list | grep maple
 
+# torrent
+dnf install transmission
+pip install stig
+dnf install transmission-cli
+
