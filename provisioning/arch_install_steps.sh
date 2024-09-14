@@ -43,7 +43,7 @@ cat ~/locale.gen_cp | sed -e "s/^#\(en_US.UTF-8 UTF-8|)/\1/" | sed -e "s/^#\(ja_
 locale-gen
 
 # language and keymap
-echo 'LANG=en_US.UTF-8 UTF-8" > /etc/locale.conf
+echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 echo 'KEYMAP=jp106' > /etc/vconsole.conf
 
 # adjust time
