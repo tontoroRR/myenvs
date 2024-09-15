@@ -42,7 +42,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 ## java
 scoop bucket add java
-scoop install oraclejre8
+scoop install temurin-lts-jdk
 
 # nvim checkstatus
 # - ERROR {C:/Users/chais/AppData/Local/nvim-data/lazy-rocks/hererocks/bin/luarocks} not installed
