@@ -27,7 +27,10 @@ mkdir /mnt/boot/efi;
 mount /dev/sda1 /mnt/boot/efi;
 
 # add japanese server
+sed -e "s/^Server/# Server/" /etc/pacman.d/mirrorlist > ~/mirrorlist
+cat ~/mirrorlist > /etc/pacmand.d/mirrorlist
 echo 'Server = http://ftp.tsukuba.wide.ad.jp/Linux/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrotlist
+
 # install packages
 pacstrap /mnt base base-devel linux linux-firmware grub efibootmgr dosfstools netctl vim openssh dhcpcd
 
