@@ -62,8 +62,15 @@ cat <<EOL > /etc/hosts
 EOL
 
 # ???
-mkinitcpio -p linux
+# mkinitcpio -p linux 不要？
 passwd # set password
+
+# dhcpcdサービス
+pacman -S dhcpcd
+systemctl enable dhcpcd@enp0s3.service
+
+# IntelCPU用設定
+pacman -S intel-ucode
 
 # grub
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --boot-directory=/boot/efi/EFI --recheck
