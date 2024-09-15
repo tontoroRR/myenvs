@@ -68,6 +68,15 @@ EOL
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --boot-directory=/boot/efi/EFI --recheck
 grub-mkconfig -o /boot/efi/EFI/grub/grub.cfg
 
+# create non-root user
+USERNAME=tontoro
+useradd -m -g wheel -d /home/${USERNAME} -s /bin/bash -m $USERNAME
+echo "$USERNAME:pass" | chpasswd
+
+# Defaults env_keep += "HOME" の行と %wheel ALL=(ALL) ALL の行のコメントを解除
+cp /etc/sudoers ~/sudoers.cp
+cat ~/sudoers.cp | sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" | sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)//\1/" > /etc/sudoers
+
 # change to non-root user
 su -l $USERNAME
 
