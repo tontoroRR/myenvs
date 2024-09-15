@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # original
-# [arch Linuxのインストール手順 2023年最新版](https://qiita.com/kurimochi/items/50f75a83781d53fa31c6)
+# 参考サイト： arch Linuxのインストール手順 2023年最新版
+# https://qiita.com/kurimochi/items/50f75a83781d53fa31c6
 #
 
 loadkeys jp106
