@@ -26,6 +26,7 @@ mkdir /mnt/boot;
 mount /dev/sda2 /mnt/boot;
 mkdir /mnt/boot/efi;
 mount /dev/sda1 /mnt/boot/efi;
+lsblk # check
 
 # add japanese server
 sed -e "s/^Server/# Server/" /etc/pacman.d/mirrorlist > ~/mirrorlist
