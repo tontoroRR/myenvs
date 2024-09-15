@@ -4,6 +4,7 @@
 # 参考サイト： arch Linuxのインストール手順 2023年最新版
 # https://qiita.com/kurimochi/items/50f75a83781d53fa31c6
 #
+# curl -o 01.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/01.install_from_iso.sh
 
 loadkeys jp106
 ls /sys/firmware/efi | grep efivars
