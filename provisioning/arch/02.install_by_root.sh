@@ -87,4 +87,4 @@ chmod 700 ~/.ssh
 chmod 600 ~/.ssh/*
 
 exit
-shutdown -h now
+reboot -h now
