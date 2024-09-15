@@ -97,4 +97,3 @@ echo `cd paru; makepkg -si`
 # sudo pacman -S ghostscript
 # sudo pacman -S gimp
 
-## 
