@@ -32,7 +32,7 @@ cat ~/mirrorlist > /etc/pacmand.d/mirrorlist
 echo 'Server = http://ftp.tsukuba.wide.ad.jp/Linux/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrotlist
 
 # install packages
-pacstrap /mnt base base-devel linux linux-firmware grub efibootmgr dosfstools netctl vim openssh dhcpcd
+pacstrap /mnt base base-devel linux linux-firmware grub efibootmgr dosfstools netctl vim openssh dhcpcd sudo
 
 # grub loader
 # fstab
