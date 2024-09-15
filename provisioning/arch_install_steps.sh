@@ -11,25 +11,25 @@ ls /sys/firmware/efi | grep efivars
 # check disk
 lsblk | grep -v 'rom\|loop\|airoot' # sdaと表示されるはず
 # create partition
-sgdisk -z /dev/sda
-sgdisk -n 1:0:+512M -t 1:ef00 -c 1:"EFI System" /dev/sda
-sgdisk -n 2:0:+512M -t 2:8300 -c 2:"Linux filesystem"　/dev/sda
-sgdisk -n 3:0: -t 3:8300 -c 3:"Linux filesystem" /dev/sda
+sgdisk -z /dev/sda;
+sgdisk -n 1:0:+512M -t 1:ef00 -c 1:"EFI System" /dev/sda;
+sgdisk -n 2:0:+512M -t 2:8300 -c 2:"Linux filesystem"　/dev/sda;
+sgdisk -n 3:0: -t 3:8300 -c 3:"Linux filesystem" /dev/sda;
 # format
-mkfs.vfat -F32 /dev/sda1
-mkfs.ext4 /dev/sda2
-mkfs.ext4 /dev/sda3
+mkfs.vfat -F32 /dev/sda1;
+mkfs.ext4 /dev/sda2;
+mkfs.ext4 /dev/sda3;
 # mount
-mount /dev/sda3 /mnt
-mkdir /mnt/boot
-mount /dev/sda2 /mnt/boot
-mkdir /mnt/boot/efi
-mount /dev/sda1 /mnt/boot/efi
+mount /dev/sda3 /mnt;
+mkdir /mnt/boot;
+mount /dev/sda2 /mnt/boot;
+mkdir /mnt/boot/efi;
+mount /dev/sda1 /mnt/boot/efi;
 
 # add japanese server
 echo 'Server = http://ftp.tsukuba.wide.ad.jp/Linux/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrotlist
 # install packages
-pacstrap /mnt base base-devel linux linux-firmware grub efibootmgr dosfstools netctl vim
+pacstrap /mnt base base-devel linux linux-firmware grub efibootmgr dosfstools netctl vim openssh dhcpcd
 
 # grub loader
 # fstab
@@ -40,7 +40,7 @@ arch-chroot /mnt /bin/bash
 
 # Locale
 cp /etc/locale.gen ~/locale.gen_cp
-cat ~/locale.gen_cp | sed -e "s/^#\(en_US.UTF-8 UTF-8|)/\1/" | sed -e "s/^#\(ja_JP.UTF-8 UTF-8\)/\1/" > /etc/locale.gen
+cat ~/locale.gen_cp | sed -e "s/^#\(en_US.UTF-8 UTF-8\)/\1/" | sed -e "s/^#\(ja_JP.UTF-8 UTF-8\)/\1/" > /etc/locale.gen
 locale-gen
 
 # language and keymap
@@ -53,7 +53,7 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 hwclock --systohc --utc
 
 # set hostname
-MY_HOSTNAME=tontoro
+MY_HOSTNAME=arch
 echo $MY_HOSTNAME > /etc/hostname
 cat <<EOL > /etc/hosts
 127.0.0.1 localhost
@@ -63,14 +63,22 @@ EOL
 
 # ???
 # mkinitcpio -p linux 不要？
-passwd # set password
+echo "$(whoami):pass" | chpasswd # set password
 
 # dhcpcdサービス
-pacman -S dhcpcd
 systemctl enable dhcpcd@enp0s3.service
 
 # IntelCPU用設定
-pacman -S intel-ucode
+# [Arch LinuxをVirtualBox上にインストール #archLinux - Qiita]
+# (https://qiita.com/honeniq/items/579b36588f3c1061edf5)
+pacman -S --noconfirm intel-ucode
+
+# NetworkManager
+# [ArchLinuxをインストールした直後に行う設定（GUI導入や日本語化、アーカイブ設定、Office、Bluetoothなど） #Bash - Qiita]
+# https://qiita.com/Hayao0819/items/f23c6a6f1e103c5b6a83
+pacman -S --noconfirm networkmanager
+systemctl enable NetworkManager
+systemctl start NetworkManager
 
 # grub
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --boot-directory=/boot/efi/EFI --recheck
@@ -81,7 +89,7 @@ shutdown -h now
 # create user
 USERNAME=tontoro
 useradd -m -g wheel -d /home/${USERNAME} -s /bin/bash -m $USERNAME
-passwd ${USERNAME}
+echo "$USERNAME:pass" | chpasswd
 # 画面の指示に従ってパスワードを設定
 pacman -S sudo
 
