@@ -61,7 +61,7 @@ wget -O ~/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myen
 cat <<'EOL' >> ~/.bashrc
 
 # nvim
-export PATH="$PATH:$HOME/.nvim/bin"'
+export PATH=$PATH:$HOME/.nvim/bin
 
 # display
 if [[ -v $SSH_CLIENT ]];
