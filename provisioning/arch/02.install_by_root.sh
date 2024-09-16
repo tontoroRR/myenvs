@@ -50,13 +50,3 @@ sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" ~/sudoers_copy| sed -e "s/
 
 # change to non-root user
 su -l $USERNAME
-
-# Generate key for ssh with PSA
-ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa.arch <<<y
-cat ~/.ssh/id_rsa.arch.pub >> ~/.ssh/authorized_keys
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/*
-more ~/.ssh/id_rsa.arch
-
-exit
-# shotdown -h now
