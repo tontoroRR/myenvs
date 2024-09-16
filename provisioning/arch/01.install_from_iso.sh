@@ -14,7 +14,7 @@ lsblk | grep -v 'rom\|loop\|airoot' # sdaと表示されるはず
 # create partition
 sgdisk -z /dev/sda;
 sgdisk -n 1:0:+512M -t 1:ef00 -c 1:"EFI System" /dev/sda;
-sgdisk -n 2:0:+512M -t 2:8300 -c 2:"Linux filesystem"　/dev/sda;
+sgdisk -n 2:0:+512M -t 2:8300 -c 2:"Linux filesystem" /dev/sda;
 sgdisk -n 3:0: -t 3:8300 -c 3:"Linux filesystem" /dev/sda;
 # format
 mkfs.vfat -F32 /dev/sda1;
