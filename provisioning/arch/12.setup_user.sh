@@ -2,6 +2,9 @@
 #
 # curl -o 12.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/12.setup_user.sh
 
+# Add me to vboxsf group
+usermod -aG vboxsf $(whoami)
+
 # asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
 echo . "\$HOME/.asdf/asdf.sh" >> ~/.bashrc
@@ -30,8 +33,17 @@ gem install neovim
 pip install --user --upgrade pynvim
 
 # Setup for rust tools
-echo eval "\"\$(zoxide init bash)\"" >> ~/.bashrc
-echo "[ -f ~/.fzf.bash ] && source ~/.fzf.bash" >> ~/.bashrc
+## zoxide
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
+asdf plugin add zoxide
+asdf install zoxide latest
+asdf global zoxide latest
+echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+
+echo '[ -f ~/.fzf.bash ] && source ~/.fzf.bash' >> ~/.bashrc
 
 # neovim
 mkdir -p ~/.config/nvim
