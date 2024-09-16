@@ -88,5 +88,5 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/*
 
-# exit
-# reboot -h now
+exit
+shotdown -h now
