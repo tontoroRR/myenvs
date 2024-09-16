@@ -3,18 +3,31 @@
 # curl -o 12.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/12.setup_user.sh
 
 # Add me to vboxsf group
+# virtualbox-guest-utilsのインストールが必要
+# systemctl enable --now vboxserviceも必要
 sudo usermod -aG vboxsf $(whoami)
 
 # rust tools
+sudo pacman -S --noconfirm ripgrep fd
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install <<<yyy
-sudo pacman -S --noconfirm ripgrep fd
+cat <<'EOL' >> ~/.bashrc
+
+# zoxide
+export PATH=$PATH:$HOME/.local/bin
+eval "$(zoxide init bash)"
+EOL
 
 # asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-echo . "\$HOME/.asdf/asdf.sh" >> ~/.bashrc
-echo . "\$HOME/.asdf/completions/asdf.bash" >> ~/.bashrc
+cat <<'EOL' >> ~/.bashrc
+
+# asdf setting
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
+EOL
 . ~/.bashrc
 
 # install languages by asdf
@@ -46,7 +59,11 @@ rm nvim-linux64.tar.gz
 mkdir -p ~/.config/nvim
 wget -O ~/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua
 cat <<'EOL' >> ~/.bashrc
+
+# nvim
 export PATH="$PATH:$HOME/.nvim/bin"'
+
+# display
 if [[ -v $SSH_CLIENT ]];
 then
   export DISPLAY=$(echo $SSH_CLIENT|cut -f1 -d' '):0.0
