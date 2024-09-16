@@ -3,7 +3,13 @@
 # curl -o 12.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/12.setup_user.sh
 
 # Add me to vboxsf group
-usermod -aG vboxsf $(whoami)
+sudo usermod -aG vboxsf $(whoami)
+
+# rust tools
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install <<<yyy
+sudo pacman -S --noconfirm ripgrep fd
 
 # asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
@@ -32,22 +38,21 @@ npm install -g tree-sitter-cli
 gem install neovim
 pip install --user --upgrade pynvim
 
-# Setup for rust tools
-## zoxide
-curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
-
-asdf plugin add zoxide
-asdf install zoxide latest
-asdf global zoxide latest
-echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
-
-echo '[ -f ~/.fzf.bash ] && source ~/.fzf.bash' >> ~/.bashrc
-
 # neovim
+sudo pacman -S --noconfirm xsel # copy/paste tool
+wget https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+tar zxvf nvim-linux64.tar.gz && mv nvim-linux64 .nvim
+rm nvim-linux64.tar.gz
 mkdir -p ~/.config/nvim
-wget -O ~/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua 
+wget -O ~/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua
+cat <<'EOL' >> ~/.bashrc
+export PATH="$PATH:$HOME/.nvim/bin"'
+if [[ -v $SSH_CLIENT ]];
+then
+  export DISPLAY=$(echo $SSH_CLIENT|cut -f1 -d' '):0.0
+fi
+EOL
+. .bashrc
 
 # docker
 sudo pacman -S --noconfirm docker
