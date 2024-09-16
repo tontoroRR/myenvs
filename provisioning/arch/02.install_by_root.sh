@@ -5,9 +5,10 @@
 # curl -o 02.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/02.install_by_root.sh
 
 # Locale
-cp /etc/locale.gen ~/locale.gen_cp
-cat ~/locale.gen_cp | sed -e "s/^#\(en_US.UTF-8 UTF-8\)/\1/" | sed -e "s/^#\(ja_JP.UTF-8 UTF-8\)/\1/" > /etc/locale.gen
+cp /etc/locale.gen ~/locale.gen_copy
+sed -e "s/^#\(en_US.UTF-8 UTF-8\)/\1/" ~/locale.gen_copy| sed -e "s/^#\(ja_JP.UTF-8 UTF-8\)/\1/" > /etc/locale.gen
 locale-gen
+rm locale.gen_copy
 
 # language and keymap
 echo 'LANG=en_US.UTF-8' > /etc/locale.conf
@@ -45,16 +46,17 @@ echo "$USERNAME:pass" | chpasswd
 
 # Defaults env_keep += "HOME" の行と %wheel ALL=(ALL) ALL の行のコメントを解除
 cp /etc/sudoers ~/sudoers_copy
-sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/"  ~/sudoers_copy| sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)//\1/" > /etc/sudoers
+sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" ~/sudoers_copy| sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)/\1/" > /etc/sudoers
 
 # change to non-root user
 su -l $USERNAME
 
 # Generate key for ssh with PSA
-ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa.arch <<<y
+cat ~/.ssh/id_rsa.arch.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/*
+more ~/.ssh/id_rsa.arch
 
 exit
-shotdown -h now
+# shotdown -h now
