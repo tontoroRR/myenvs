@@ -69,7 +69,7 @@ then
   export DISPLAY=$(echo $SSH_CLIENT|cut -f1 -d' '):0.0
 fi
 EOL
-. .bashrc
+. ~/.bashrc
 
 # docker
 sudo pacman -S --noconfirm docker
