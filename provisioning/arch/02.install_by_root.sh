@@ -34,38 +34,6 @@ echo "$(whoami):pass" | chpasswd # set password
 # dhcpcdサービス
 systemctl enable dhcpcd@enp0s3.service
 
-# IntelCPU用設定
-# [Arch LinuxをVirtualBox上にインストール #archLinux - Qiita]
-# (https://qiita.com/honeniq/items/579b36588f3c1061edf5)
-pacman -S --noconfirm intel-ucode
-
-# dosfstool
-pacman -S --noconfirm dosfstool
-
-# run auto install script
-bootctl --path=/boot install # mkinicpioと似たメッセージが出る
-
-# boot loader entry
-cat <<EOL > /boot/loader/entries/arch.conf
-title Arch Linux
-linux /vmlinuz-linux
-initrd /intel-ucode.img
-initrd /initramfs-linux.img
-options root=/dev/sda3 rw
-EOL
-
-cat <<EOL > /boot/loader/loader.conf
-default arch
-timeout 5
-EOL
-
-# NetworkManager(不要?)
-# [ArchLinuxをインストールした直後に行う設定（GUI導入や日本語化、アーカイブ設定、Office、Bluetoothなど） #Bash - Qiita]
-# https://qiita.com/Hayao0819/items/f23c6a6f1e103c5b6a83
-# pacman -S --noconfirm networkmanager
-# systemctl enable NetworkManager
-# systemctl start NetworkManager
-
 # grub
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --boot-directory=/boot/efi/EFI --recheck
 grub-mkconfig -o /boot/efi/EFI/grub/grub.cfg
@@ -76,8 +44,8 @@ useradd -m -g wheel -d /home/${USERNAME} -s /bin/bash -m $USERNAME
 echo "$USERNAME:pass" | chpasswd
 
 # Defaults env_keep += "HOME" の行と %wheel ALL=(ALL) ALL の行のコメントを解除
-cp /etc/sudoers ~/sudoers.cp
-cat ~/sudoers.cp | sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" | sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)//\1/" > /etc/sudoers
+cp /etc/sudoers ~/sudoers_copy
+sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/"  ~/sudoers_copy| sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)//\1/" > /etc/sudoers
 
 # change to non-root user
 su -l $USERNAME
