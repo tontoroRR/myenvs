@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# curl -o 12.sh 
+# curl -o 12.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/12.setup_user.sh
 
 # asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
