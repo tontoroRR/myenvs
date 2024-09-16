@@ -23,6 +23,3 @@ systemctl enable --now vboxservice
 pacman -S --noconfirm base-devel git wget neovim unzip libyaml
 pacman -S --noconfirm ripgrep fd fzf
 # pacman -S --noconfirm zoxide ripgrep fd fzf
-
-# Add user to vboxsf group
-usermod -aG vboxsf $USERNAME
