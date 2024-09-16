@@ -1,6 +1,8 @@
 #!/bin/bash
 # [arch Linuxのインストール手順 2023年最新版 #archLinux - Qiita]
 # https://qiita.com/kurimochi/items/50f75a83781d53fa31c6
+#
+# curl -o 02.sh https://raw.githubusercontent.com/tontoroRR/myenvs/main/provisioning/arch/02.install_by_root.sh
 
 # Locale
 cp /etc/locale.gen ~/locale.gen_cp
@@ -86,5 +88,5 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/*
 
-exit
-reboot -h now
+# exit
+# reboot -h now
