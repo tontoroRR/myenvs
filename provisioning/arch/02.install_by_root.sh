@@ -48,5 +48,11 @@ echo "$USERNAME:pass" | chpasswd
 cp /etc/sudoers ~/sudoers_copy
 sed -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" ~/sudoers_copy| sed -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)/\1/" > /etc/sudoers
 
+# Default DNSs
+cat <<EOL > /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+EOL
+
 # change to non-root user
 su -l $USERNAME
