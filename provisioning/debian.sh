@@ -9,27 +9,32 @@ sudo apt install -y libyaml-dev universal-ctags
 
 # git
 sudo apt remove -y git
-sudo add-apt-repository ppa:git-core/ppa
+sudo add-apt-repository ppa:git-core/ppa -y
 sudo apt -y update
 sudo apt -y install git
 
 # asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-echo . "\$HOME/.asdf/asdf.sh" >> ~/.bashrc
-echo . "\$HOME/.asdf/completions/asdf.bash" >> ~/.bashrc
+cat <<'EOL' >> ~/.bashrc
+
+# asdf setting
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+EOL
 . .bashrc
 
 # install rust tools
 asdf plugin add zoxide
 asdf install zoxide latest
 asdf global zoxide latest
-echo eval "\"\$(zoxide init bash)\"" >> ~/.bashrc
+echo 'eval $(zoxide init bash)' >> ~/.bashrc
 sudo apt install -y ripgrep
 sudo apt install -y fd-find
 wget https://github.com/junegunn/fzf/releases/download/v0.55.0/fzf-0.55.0-linux_amd64.tar.gz
 tar zxvf fzf-0.55.0-linux_amd64.tar.gz
 sudo mv fzf /usr/local/bin
-echo "[ -f ~/.fzf.bash ] && source ~/.fzf.bash" >> ~/.bashrc
+echo '[ -f ~/.fzf.bash ] && source ~/.fzf.bash' >> ~/.bashrc
+. .bashrc
 
 # tree-sitter
 wget https://github.com/tree-sitter/tree-sitter/releases/download/v0.23.0/tree-sitter-linux-x64.gz
