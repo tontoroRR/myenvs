@@ -63,10 +63,25 @@ gem install neovim
 pip install --user --upgrade pynvim
 
 # nvim
-wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-chmod u+x nvim.appimage
-sudo mv nvim.appimage /usr/local/bin/nvim
+sudo apt install -y xsel
+wget https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+tar zxvf nvim-linux64.tar.gz
+rm nvim-linux64.tar.gz
 mkdir -p ~/.config/nvim
-cd ~/.config/nvim
-wget https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua 
-cd ~
+wget -O ~/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua
+cat <<'EOL' >> ~/.bashrc
+
+# nvim
+export PATH=$PATH:$HOME/.nvim/bin
+
+# display
+if [[ -v SSH_CLIENT ]];
+then
+  export DISPLAY=$(echo $SSH_CLIENT|cut -f1 -d' '):0.0
+fi
+EOL
+. ~/.bashrc
+
+# Xserver
+sudo apt update
+sudo apt -y install xserver-xorg
