@@ -480,15 +480,21 @@ require("lazy").setup({
         fallback = 'unnamedplus',
         lazy = true,
       }
+      copy_command = 'win32yank.exe -i --crlf'
+      paste_command = 'win32yank.exe -o --lf'
+      if vim.loop.os_uname().sysname == 'Linux' then
+        copy_command = 'xsel -ib'
+        paste_command = 'xsel -ob'
+      end
       vim.g.clipboard = {
         name = 'clip',
         copy = {
-          ['+'] = 'win32yank.exe -i --crlf',
-          ['*'] = 'win32yank.exe -i --crlf',
+          ['+'] = copy_command,
+          ['*'] = copy_command,
         },
         paste = {
-          ['+'] = 'win32yank.exe -o --lf',
-          ['*'] = 'win32yank.exe -o --lf',
+          ['+'] = paste_command,
+          ['*'] = paste_command,
         },
         cache_enable = 0,
       }
