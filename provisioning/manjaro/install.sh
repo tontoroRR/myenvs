@@ -14,7 +14,8 @@ pacman -Syu --noconfirm
 pacman -S --noconfirm base-devel openssh dhcpcd sudo vim
 
 # history
-cat <<'EOL' >> ~/.bash_profile
+cat <<'EOL' > /etc/profile.d/my_history.sh
+# shellcheck shell=sh
 
 # history settings
 export HISTTIMEFORMAT='%F %T '
@@ -24,6 +25,15 @@ export HISTSIZE=1000
 export HISTCONTROL=ignoredups
 export HISTIGNORE='ls:cd:pwd:whoami'
 EOL
+chmod a+x /etc/profile.d/history.sh
+
+# ssh setting
+cat <<'EOL' > /etc/profile.d/my_ssh.sh
+# shellcheck shell=sh
+
+export DISPLAY=${SSH_CLIENT%% *}:0.0
+EOL
+chmod a+x /etc/profile.d/ssh.sh
 
 # locale & datetime
 sed -i -e "s/^#\(en_US.UTF-8 UTF-8\)/\1/" /etc/locale.gen
@@ -47,3 +57,12 @@ cat <<EOL >> /etc/resolv.conf
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 EOL
+
+# docker
+pacman -S --no-confirm docker
+pacman -S --no-confirm docker-compose
+systemctl enable --now docker
+systemctl enable --now containerd
+
+# nvim
+
