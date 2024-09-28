@@ -53,10 +53,25 @@ sed -i -e "s/^#.*\(Defaults env_keep += \"HOME\"$\)/\1/" /etc/sudoers
 sed -i -e "s/^#.*\(%wheel ALL=(ALL:ALL) ALL$\)/\1/" /etc/sudoers
 
 # nameserver
-cat <<EOL >> /etc/resolv.conf
-nameserver 8.8.8.8
-nameserver 8.8.4.4
+## set rc-manager
+cat <<'EOL' > /etc/NetworkManager/conf.d/20-rc-manager.conf
+[main]
+rc-manager=resolvconf
 EOL
+## disable dns overwriting
+cat <<'EOL' > /etc/NetworkManager/conf.d/99-dont-touch-my-dns.conf
+[main]
+dns=none
+EOL
+## add my dnf
+cat <<EOL >> /etc/resolvconf.conf
+name_servers="8.8.8.8 8.8.4.4"
+EOL
+## update
+resolvconf -u
+
+# disable ipv6
+sed -i -e "s/\(GRUB_CMDLINE_LINUX=.*\)\"$/\1 ipv6.disable=1\"/" /etc/default/grub
 
 # docker
 pacman -S --no-confirm docker
@@ -64,5 +79,19 @@ pacman -S --no-confirm docker-compose
 systemctl enable --now docker
 systemctl enable --now containerd
 
+# install yay & paru
+cat <<'EOL' > /etc/sudoers.d/02_aur
+aur   ALL = (root) NOPASSWD: /usr/bin/makepkg, /usr/bin/pacman
+EOL
+useradd -m aur || true
+cat <<'EOL' > install_pkg.sh
+rm -rf /tmp/package-query ; mkdir -p /tmp/package-query ; cd /tmp/package-query ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz ; tar zxvf package-query.tar.gz ; cd package-query ; makepkg --syncdeps --rmdeps --install --noconfirm
+rm -rf /tmp/yay ; mkdir -p /tmp/yay ; cd /tmp/yay ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz ; tar zxvf yay.tar.gz ; cd yay ; makepkg --syncdeps --rmdeps --install --noconfirm
+rm -rf /tmp/paru ; mkdir -p /tmp/paru ; cd /tmp/paru ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/paru.tar.gz ; tar zxvf paru.tar.gz ; cd paru ; makepkg --syncdeps --rmdeps --install --noconfirm
+EOL
+chmod a+x install_pkg.sh
+su aur ./install_pkg.sh
+
+# maple font
 # nvim
 
