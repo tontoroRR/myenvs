@@ -80,6 +80,8 @@ systemctl enable --now docker
 systemctl enable --now containerd
 
 # install yay & paru
+## paru cannot be installed due to libalpm version incompatibility
+## https://github.com/Morganamilo/paru/issues/1240
 cat <<'EOL' > /etc/sudoers.d/02_aur
 aur   ALL = (root) NOPASSWD: /usr/bin/makepkg, /usr/bin/pacman
 EOL
@@ -87,11 +89,15 @@ useradd -m aur || true
 cat <<'EOL' > install_pkg.sh
 rm -rf /tmp/package-query ; mkdir -p /tmp/package-query ; cd /tmp/package-query ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz ; tar zxvf package-query.tar.gz ; cd package-query ; makepkg --syncdeps --rmdeps --install --noconfirm
 rm -rf /tmp/yay ; mkdir -p /tmp/yay ; cd /tmp/yay ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz ; tar zxvf yay.tar.gz ; cd yay ; makepkg --syncdeps --rmdeps --install --noconfirm
-rm -rf /tmp/paru ; mkdir -p /tmp/paru ; cd /tmp/paru ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/paru.tar.gz ; tar zxvf paru.tar.gz ; cd paru ; makepkg --syncdeps --rmdeps --install --noconfirm
+# rm -rf /tmp/paru ; mkdir -p /tmp/paru ; cd /tmp/paru ; wget https://aur.archlinux.org/cgit/aur.git/snapshot/paru.tar.gz ; tar zxvf paru.tar.gz ; cd paru ; makepkg --syncdeps --rmdeps --install --noconfirm
+# rm -rf /tmp/paru ; mkdir -p /tmp/paru ; cd /tmp/paru ; git clone https://aur.archlinux.org/paru-git.git; cd paru-git ; makepkg --syncdeps --rmdeps --install --noconfirm
 EOL
 chmod a+x install_pkg.sh
 su aur ./install_pkg.sh
 
 # maple font
+## paru -S --noconfirm ttf-maple
+yay -S --noconfirm ttf-maple
+
 # nvim
 
