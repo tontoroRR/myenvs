@@ -97,7 +97,7 @@ su aur ./install_pkg.sh
 
 # maple font
 ## paru -S --noconfirm ttf-maple
-yay -S --noconfirm ttf-maple
+su - aur -c 'yay -S --noconfirm ttf-maple'
 
 # nvim
 
