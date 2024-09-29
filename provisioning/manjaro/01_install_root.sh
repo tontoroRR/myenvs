@@ -98,3 +98,6 @@ su aur ./install_pkg.sh
 # maple font
 ## paru -S --noconfirm ttf-maple
 su - aur -c 'yay -S --noconfirm ttf-maple'
+
+# other tools
+sudo pacman -S --noconfirm ripgrep fd neovim tree-sitter xsel
