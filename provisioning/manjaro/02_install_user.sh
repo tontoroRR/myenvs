@@ -10,9 +10,7 @@ cat <<'EOL' >> $HOME/.bashrc
 EOL
 . $HOME/.bashrc
 
-# rust tools
-sudo pacman -S --noconfirm ripgrep
-sudo pacman -S --noconfirm fd
+# tools
 ## zoxide
 asdf plugin add zoxide
 asdf install zoxide latest
@@ -41,8 +39,7 @@ asdf plugin add ruby
 asdf install ruby latest
 asdf global ruby latest
 
-# nvim
-sudo pacman -S --noconfirm neovim tree-sitter xsel
+# nvim setting and libraries
 mkdir -p $HOME/.config/nvim
 wget -O $HOME/.config/nvim/init.lua https://raw.githubusercontent.com/tontoroRR/myenvs/main/init.lua
 ## libraries for nvim
