@@ -1,7 +1,9 @@
 #!/bin/bash
-HOSTNAME=manjaro
 
 # hostname
+HOSTNAME=manjaro
+
+hostnamectl set-hostname $HOSTNAME
 echo $HOSTNAME > /etc/hostname
 if grep 127.0.1.1 /etc/hosts 1>/dev/null 2>&1 ;
 then
@@ -11,7 +13,7 @@ else
 fi
 
 pacman -Syu --noconfirm
-pacman -S --noconfirm base-devel openssh dhcpcd sudo vim
+pacman -S --noconfirm base-devel openssh dhcpcd sudo vim unzip tk
 
 # history
 cat <<'EOL' > /etc/profile.d/my_history.sh
@@ -99,5 +101,4 @@ su aur ./install_pkg.sh
 ## paru -S --noconfirm ttf-maple
 su - aur -c 'yay -S --noconfirm ttf-maple'
 
-# other tools
 sudo pacman -S --noconfirm ripgrep fd neovim tree-sitter xsel

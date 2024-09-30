@@ -8,7 +8,8 @@ cat <<'EOL' >> $HOME/.bashrc
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
 EOL
-. $HOME/.bashrc
+## load asdf for further installation process
+. $HOME/.asdf/asdf.sh
 
 # tools
 ## zoxide
@@ -23,7 +24,6 @@ EOL
 ## fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
 $HOME/.fzf/install --all
-. $HOME/.bashrc
 
 # language from asdf
 asdf plugin add nodejs
