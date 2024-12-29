@@ -12,7 +12,7 @@ else
   echo "127.0.1.1 $HOSTNAME" > /etc/hosts
 fi
 # re-sync then refresh keys
-pacman -Syy
+pacman -Syy --noconfirm
 pacman-key --refresh-keys
 pacman-key --populate archlinux manjaro
 
