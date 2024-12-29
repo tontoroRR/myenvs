@@ -11,7 +11,12 @@ then
 else
   echo "127.0.1.1 $HOSTNAME" > /etc/hosts
 fi
+# re-sync then refresh keys
+pacman -Syy
+pacman-key --refresh-keys
+pacman-key --populate archlinux manjaro
 
+# update system then install essentials
 pacman -Syu --noconfirm
 pacman -S --noconfirm base-devel openssh dhcpcd sudo vim unzip tk
 
@@ -76,8 +81,8 @@ resolvconf -u
 sed -i -e "s/\(GRUB_CMDLINE_LINUX=.*\)\"$/\1 ipv6.disable=1\"/" /etc/default/grub
 
 # docker
-pacman -S --no-confirm docker
-pacman -S --no-confirm docker-compose
+pacman -S --noconfirm docker
+pacman -S --noconfirm docker-compose
 systemctl enable --now docker
 systemctl enable --now containerd
 
