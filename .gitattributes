@@ -1,0 +1,8 @@
+.gitignore text=auto eol=lf
+.gitattributes text=auto eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.yaml text eol=crlf
+*.yml text eol=lf
+*.jpg binary
+*.png binary
