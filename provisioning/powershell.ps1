@@ -45,7 +45,7 @@ scoop bucket add java
 scoop install temurin-lts-jdk
 
 # nvim checkstatus
-# - ERROR {C:/Users/chais/AppData/Local/nvim-data/lazy-rocks/hererocks/bin/luarocks} not installed
+# - ERROR {C:/Users/(name)/AppData/Local/nvim-data/lazy-rocks/hererocks/bin/luarocks} not installed
 # - WARNING `tree-sitter` executable not found (parser generator, only needed for :TSInstallFromGrammar, not required for :TSInstall)
 # - ERROR `cc` executable not found.
 # - WARNING Missing "neovim" npm (or yarn, pnpm) package.
@@ -55,7 +55,7 @@ scoop install temurin-lts-jdk
 #   - ADVICE:
 #     - See :help |provider-perl| for more information.
 #     - You may disable this provider (and warning) by adding `let g:loaded_perl_provider = 0` to your init.vim
-# - ERROR Detected pip upgrade failure: Python executable can import "pynvim" but not "neovim": 
+# - ERROR Detected pip upgrade failure: Python executable can import "pynvim" but not "neovim":
 #   - ADVICE:
 #     - Use that Python version to reinstall "pynvim" and optionally "neovim".
 #     -  -m pip uninstall pynvim neovim
@@ -92,9 +92,9 @@ scoop install temurin-lts-jdk
 # - WARNING In mode `n`, <.> overlaps with <..>:
 #   - <.>: set_root
 # - WARNING In mode `n`, <g=> overlaps with <g==>:
-#   
+#
 # - WARNING In mode `n`, <g!> overlaps with <g!!>:
-#   
+#
 # - WARNING In mode `n`, <gc> overlaps with <gcc>:
 #   - <gc>: Toggle comment
 #   - <gcc>: Toggle comment line

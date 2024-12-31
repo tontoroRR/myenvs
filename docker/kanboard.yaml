@@ -1,0 +1,23 @@
+services:
+  kanboard:
+    image: kanboard/kanboard:latest
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./volumes/kanboard_data:/var/www/app/data
+      - ./volumes/kanboard_plugins:/var/www/app/plugins
+      - ./volumes/kanboard_ssl:/etc/nginx/ssl
+    environment:
+      DATABASE_URL: postgres://kanboard:kanboard@db:5432/kanboard
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: kanboard
+      POSTGRES_USER: kanboard
+      POSTGRES_PASSWORD: kanboard
+    # ports:
+    #  - "5432:5432"
+    container_name: postgres
+    volumes:
+      - "./volumes/kanboarddb-data:/var/lib/postgresql/data"

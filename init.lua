@@ -47,7 +47,7 @@ end
 vim.g.mapleader = ";"
 
 -- key mapping
-function map_keys (ary_km, cmd) 
+function map_keys (ary_km, cmd)
 	-- ary_km (modes='n,g,v,i,t':'n', key, action, opt(silent)=true/false:true)
 	local opts = { noremap = true, silent = true }
 	local ns_opts = { noremap = true, silent = false }
@@ -120,7 +120,7 @@ vim.opt.rtp:prepend(lazypath)
 -- plugins
 require("lazy").setup({
 	{
-    'nvim-lualine/lualine.nvim', 
+    'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function ()
       require('lualine').setup {
@@ -140,7 +140,7 @@ require("lazy").setup({
   {
     'tpope/vim-scriptease', 'neoclide/coc.nvim',
   },
-  { 
+  {
     'neoclide/coc.nvim',
     event = 'VeryLazy', -- lz
     branch = 'release',
@@ -154,7 +154,7 @@ require("lazy").setup({
     end
   },
   {
-    'nvim-neo-tree/neo-tree.nvim', 
+    'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -239,7 +239,7 @@ require("lazy").setup({
 	  end
   },
   { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
-  { 
+  {
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy', -- lz
     dependencies = {
@@ -647,8 +647,8 @@ end
 --[[
 function xxx()
   local buf = vim.api.nvim_buf_get_name(0)
-  local profile = 'D:\Users\masaaki\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
-  -- local 
+  local profile = 'D:\Users\username\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+  -- local
 end
 ]]
 
