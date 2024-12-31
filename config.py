@@ -309,7 +309,10 @@ def configure(window):
         # ("FireFox",   window.ShellExecuteCommand(None, "C:/Program Files/Mozilla Firefox/firefox.exe", "", "C:/Program Files/Mozilla Firefox")),
         # URL / Edge
         ('abema', window.UrlCommand('https://abema.tv', encoding = 'utf8')),
-        ('dmm', window.UrlCommand('https://dmm.com', encoding = 'utf8')),
+        ('amaprime', window.UrlCommand('https://www.amazon.co.jp/gp/video/storefront', encoding = 'utf8')),
+        ('dmm', window.UrlCommand('https://tv.dmm.com', encoding = 'utf8')),
+        ('netflix', window.UrlCommand('https://www.netflix.com/jp/', encoding = 'utf8')),
+        ('tver', window.UrlCommand('https://tver.jp', encoding = 'utf8')),
         # URL / Brave
         ('amazon', open_brave_url('https://www.amazon.co.jp')),
         ('drive', open_brave_url('https://drive.google.com/')),
