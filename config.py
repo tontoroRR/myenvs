@@ -62,7 +62,6 @@ def configure(window):
     #   コマンド名なしでEnterを押したときに実行されるコマンドです。
     #   この例では、ほかのアプリケーションをフォアグラウンド化するために使います。
     def command_QuickActivate(info):
-
         def callback(wnd, arg):
             process_name, class_name = arg[0], arg[1]
             if (process_name is None or wnd.getProcessName() == process_name) and (class_name is None or wnd.getClassName() == class_name):
@@ -70,7 +69,6 @@ def configure(window):
                 wnd.setForeground(True)
                 return False
             return True
-
         if info.mod==MODKEY_SHIFT:
             pyauto.Window.enum(callback, ["cfiler.exe",None])
         elif info.mod==MODKEY_CTRL:
@@ -79,7 +77,6 @@ def configure(window):
                 return
             elif len(info.args) == 1:
                 param = str.strip(info.args[0])
-
             print(param)
             subprocess.Popen(['start', f'{param}'], shell=True)
             # pyauto.Window.enum(callback, ["notepad.exe","Notepad"])
@@ -120,14 +117,12 @@ def configure(window):
         if len(info.args) < 1:
             info.args.append('reload')
             return
-
         switch_params = {
             'up': f'startvm {vmname}',
             'down': f'controlvm {vmname} poweroff',
             'take': f'snapshot {vmname} take {datetime_now()}',
             'reload': f'controlvm {vmname} reboot',
         }
-        
         subcmd = info.args[0].lower()
         if (subcmd in switch_params):
             params = switch_params[subcmd].split(' ')
@@ -190,7 +185,6 @@ def configure(window):
 
     def scr(info):
         params = []
-
         switch_params = {
             'm': '', # 61 61
             'r': '44 61',
@@ -238,21 +232,26 @@ def configure(window):
     def run_scoop_app(name='', param='', path=''):
         scoop_dir = 'D:/UserSetting/scoop'
         if name == '': return
-        if path == '':
-            program_path = f'{scoop_dir}/apps/{name}/current'
-        else:
-            program_path = f'{scoop_dir}/apps/{path}'
+        program_path = f'{scoop_dir}/apps/{name}/current' if path == '' else f'{scoop_dir}/apps/{path}'
+        return window.ShellExecuteCommand(None, f'{program_path}/{name}.exe', param, program_path)
+
+    def run_portable_app(name='', param='', path=''):
+        portable_dir = 'D:/UserSetting/PortableApps'
+        if name == '': return
+        program_path = f'{portable_dir}/{name}' if path == '' else f'{portable_dir}/{path}'
         return window.ShellExecuteCommand(None, f'{program_path}/{name}.exe', param, program_path)
 
     def start_exe(exe, param):
-        if isinstance(exe, str):
-            exe = [exe]
-        if isinstance(param, str):
-            param = [param]
+        if isinstance(exe, str): exe = [exe]
+        if isinstance(param, str): param = [param]
         subprocess.Popen(['start'] + exe + param, shell=True)
 
     def ghq_explorer(info):
-        start_exe('pwsh', ['-nop', '-Command', 'Set-Variable -Name p -Value (ghq list --full-path|fzf);if ($p) {explorer $p}'])
+        if len(info.args) == 0:
+            program = '{explorer $p}'
+        else:
+            program = '{pwsh.exe -wd $p}'
+        start_exe('pwsh', ['-nop', '-Command', f'Set-Variable -Name p -Value (ghq list --full-path|fzf);if ($p) {program}'])
 
     # --------------------------------------------------------------------
     # 
@@ -287,6 +286,7 @@ def configure(window):
         ('nvy', run_scoop_app('Nvy')),
         ('obs-studio', run_scoop_app('obs64', '', 'obs-studio/current/bin/64bit')),
         ('peazip', run_scoop_app('peazip')), 
+        ('portableapps', window.ShellExecuteCommand(None, APP_DIR, '', '')),
         ('pwsh', run_scoop_app('pwsh')),
         ('qbittorrent', run_scoop_app('qbittorrent', '', 'qbittorrent-enhanced/current')),
         ('restart', window.ShellExecuteCommand(None, 'shutdown', '', '')),
