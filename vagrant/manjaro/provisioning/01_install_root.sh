@@ -11,10 +11,26 @@ then
 else
   echo "127.0.1.1 $HOSTNAME" > /etc/hosts
 fi
-# re-sync then refresh keys
+# Update pacman mirrorlist
+pacman-mirrors -c Japan
+# pacman-mirrors --fasttrack # find the fastest mirrors all overthe world
+
+# Update keys
+# 1st way: just update keys
+## re-sync then refresh keys
 pacman -Syy --noconfirm
 pacman-key --refresh-keys
 pacman-key --populate archlinux manjaro
+# 2nd way: Complete remove keys then populate
+## remove all keys
+# rm -rf /etc/pacman.d/gnupg
+## init keys then populate/install
+# pacman-key --init
+# pacman-key --populate archlinux manjaro
+# pacman -Sy gnupg archlinux-keyring manjaro-keyring
+## stop gnu-pg
+# gpgconf --kill all # command to stop old gnupg
+# run pacman-key --refresh-keys # not required?
 
 # update system then install essentials
 pacman -Syu --noconfirm
@@ -83,8 +99,9 @@ sed -i -e "s/\(GRUB_CMDLINE_LINUX=.*\)\"$/\1 ipv6.disable=1\"/" /etc/default/gru
 # docker
 pacman -S --noconfirm docker
 pacman -S --noconfirm docker-compose
-systemctl enable --now docker
-systemctl enable --now containerd
+systemctl enable docker
+systemctl enable containerd
+sudo usermod -aG docker vagrant
 
 # install yay & paru
 ## paru cannot be installed due to libalpm version incompatibility
