@@ -202,6 +202,9 @@ def configure(window):
         if len(info.args) == 1:
             wait = info.args[0].lower
     
+    def copy_as(info):
+        start_exe('copy', [r'D:\UserSetting\PortableApps\CraftLaunch\config.py', r'D:\shared_folder\ghq\github.com\tontoroRR\myenvs\.'])
+
     def edit_file(info):
         param = []
         switch_params = {
@@ -271,11 +274,13 @@ def configure(window):
         ('brave', run_app('brave.exe')),
         ('calc', run_app('calc.exe')),
         ('cmd', run_app('cmd.exe')),
+        ('copy_as', copy_as),
         ('edge', run_app('msedge.exe', '--profile-directory=Default')),
         ('explorer', run_app('explorer.exe')),
         ('ef', edit_file),
         ('fedora', vbmanage_fedora),
         ('ghq_explorer', ghq_explorer),
+        ('gvim', run_scoop_app('gvim', '', 'vim-nightly/current')),
         ('greeshot_folder', run_app(f'{HOME_DIR}/Pictures/greenshots/')),
         ('manjaro', vagrant_manjaro),
         ('man2', vagrant_man2),
@@ -288,8 +293,8 @@ def configure(window):
         ('peazip', run_scoop_app('peazip')), 
         ('portableapps', window.ShellExecuteCommand(None, APP_DIR, '', '')),
         ('pwsh', run_scoop_app('pwsh')),
-        ('qbittorrent', run_scoop_app('qbittorrent', '', 'qbittorrent-enhanced/current')),
         ('restart', window.ShellExecuteCommand(None, 'shutdown', '', '')),
+        ('sleep', window.ShellExecuteCommand(None, 'shutdown', '/s /f /t 1', '')),
         ('sr', scr),
         ('startup', window.ShellExecuteCommand(None, 'explorer.exe', 'shell:startup', '')),
         ('shutdown', window.ShellExecuteCommand(None, 'shutdown.exe', '/r /t 1', '')),
@@ -316,14 +321,16 @@ def configure(window):
         # URL / Brave
         ('amazon', open_brave_url('https://www.amazon.co.jp')),
         ('drive', open_brave_url('https://drive.google.com/')),
+        ('discord', open_brave_url('https://discord.com/channels/@me')),
         ('github', open_brave_url('http://github.com/tontoroRR')),
         ('gmail', open_brave_url('https://mail.google.com/')),
         ('Google', open_brave_url('http://www.google.com/search?ie=utf8&q=%param%')),
-        ('kanboard', open_brave_url('http://localhost:8081/')),
+        ('kanboard', open_brave_url('http://localhost:8080/')),
+        ('links', open_brave_url('https://docs.google.com/spreadsheets/d/{my_id}/edit?gid=0#gid=0')),
         ('qiita', open_brave_url('https://qiita.com/tontoroRR')),
         ('scoop', open_brave_url('https://scoop.sh/#/apps?q=%param%')),
         ('twitter', open_brave_url('https://twitter.com')),
-        ('discord', open_brave_url('https://discord.com/channels/@me')),
+        ('zenplace', open_brave_url('https://mypage.zenplace.co.jp/mypage/schedule/')),
 
         # Not used
         # def execByPython(arg = ''):
