@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 from clnch import *
 
@@ -358,7 +358,7 @@ def configure(window):
         ('gmail', open_brave_url('https://mail.google.com/')),
         ('Google', open_brave_url('http://www.google.com/search?ie=utf8&q=%param%')),
         ('kanboard', open_brave_url('http://localhost:8080/')),
-        ('links', open_brave_url('https://docs.google.com/spreadsheets/d/1UpvQp8uRWIFgvqLCpaACp3TLZZYPWEHH8sDdcr0C1-g/edit?gid=0#gid=0')),
+        ('links', open_brave_url('https://docs.google.com/spreadsheets/d/(sheet id)/edit?gid=0#gid=0')),
         ('qiita', open_brave_url('https://qiita.com/tontoroRR')),
         ('scoop', open_brave_url('https://scoop.sh/#/apps?q=%param%')),
         ('youtube', search_youtube),
