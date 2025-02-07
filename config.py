@@ -178,9 +178,7 @@ def configure(window):
         else:
             subprocess.Popen(command_line, shell=True, cwd=path)
 
-    def execute_by_parameter(app, switch_params, params, default, info, path='', start=True):
-        # common function for 
-        # - copy_as
+    def execute_by_parameter(info, app, switch_params, params, default, path='', start=True):
         if len(info.args) == 0:
             start_exe(app, default, path, start)
         elif len(info.args) == 1:
@@ -203,7 +201,7 @@ def configure(window):
         }
         params = lambda param: param.split(' ')
         default = f'showvminfo {vmname}'.split(' ')
-        execute_by_parameter(app, switch_params, params, default, info, start=False)
+        execute_by_parameter(info, app, switch_params, params, default, start=False)
 
     def vbmanage_fedora(info):
         vbmanage('fedora', info)
@@ -225,7 +223,7 @@ def configure(window):
         }
         params = lambda param: ['/C'] + ['vagrant.exe ' + param + ' & timeout 10']
         default = ['status']
-        execute_by_parameter(app, switch_params, params, default, info, path)
+        execute_by_parameter(info, app, switch_params, params, default, path)
         # if given arg is not in switch_params, run vbmanage(vbname, info)
 
     def vagrant_manjaro(info):
@@ -257,7 +255,7 @@ def configure(window):
         }
         params = lambda param: [param]
         default = ['']
-        execute_by_parameter(app, switch_params, params, default, info)
+        execute_by_parameter(info, app, switch_params, params, default)
 
     def copy_as(info):
         start_exe(['/MIN', 'pwsh', '-NoProfile', '-Command', 'cp', r'D:\UserSetting\PortableApps\CraftLaunch\config.py', r'D:\shared_folder\ghq\github.com\tontoroRR\myenvs\.'])
@@ -272,7 +270,7 @@ def configure(window):
         }
         params = lambda param: param.split(' ')
         default = ['']
-        execute_by_parameter(app, switch_params, params, default, info)
+        execute_by_parameter(info, app, switch_params, params, default)
 
     def ghq_explorer(info):
         app = 'pwsh.exe'
@@ -282,7 +280,7 @@ def configure(window):
         }
         params = lambda param: ['-nop', '-Command', f'Set-Variable -Name p -Value (ghq list --full-path|fzf);if ($p) {param}']
         default = ['-nop', '-Command', 'Set-Variable -Name p -Value (ghq list --full-path|fzf);if ($p) {explorer $p}']
-        execute_by_parameter(app, switch_params, params, default, info)
+        execute_by_parameter(info, app, switch_params, params, default)
 
     # --------------------------------------------------------------------
     # ショートカット 
@@ -317,6 +315,7 @@ def configure(window):
         ('ghq_explorer', ghq_explorer),
         ('gvim', register_scoop_app('gvim', '', 'vim-nightly/current')),
         ('greeshot_folder', register_app(f'{HOME_DIR}/Pictures/greenshots/')),
+        ('hibernate', window.ShellExecuteCommand(None, 'shutdown', '/h /f', '')),
         ('manjaro', vagrant_manjaro),
         ('man2', vagrant_man2),
         ('mspaint', register_app('MSPaint.exe')),
@@ -330,7 +329,7 @@ def configure(window):
         ('pwsh', register_scoop_app('pwsh')),
         ('qbittorrent', register_scoop_app('qbittorrent', '', 'qbittorrent-enhanced/current')),
         ('restart', window.ShellExecuteCommand(None, 'shutdown', '', '')),
-        ('sleep', window.ShellExecuteCommand(None, 'shutdown', '/s /f /t 1', '')),
+        ('sleep', window.ShellExecuteCommand(None, 'rundll32.exe', 'powrprof.dll,SetSuspendState 0,1,0', '')),
         ('sr', scr),
         ('startup', window.ShellExecuteCommand(None, 'explorer.exe', 'shell:startup', '')),
         ('shutdown', window.ShellExecuteCommand(None, 'shutdown.exe', '/r /t 1', '')),
@@ -347,18 +346,21 @@ def configure(window):
         # URL / Edge
         ('abema', window.UrlCommand('https://abema.tv', encoding = 'utf8')),
         ('amaprime', window.UrlCommand('https://www.amazon.co.jp/gp/video/storefront', encoding = 'utf8')),
-        ('dmm', window.UrlCommand('https://tv.dmm.com', encoding = 'utf8')),
         ('netflix', window.UrlCommand('https://www.netflix.com/jp/', encoding = 'utf8')),
         ('tver', window.UrlCommand('https://tver.jp', encoding = 'utf8')),
         # URL / Brave
         ('amazon', open_brave_url('https://www.amazon.co.jp')),
+        ('chatgpt', open_brave_url('https://chatgpt.com')),
+        ('deepL', open_brave_url('https://www.deepl.com/translator')),
         ('drive', open_brave_url('https://drive.google.com/')),
         ('discord', open_brave_url('https://discord.com/channels/@me')),
+        ('ebay', open_brave_url('https://www.ebay.com')),
         ('github', open_brave_url('http://github.com/tontoroRR')),
         ('gmail', open_brave_url('https://mail.google.com/')),
         ('Google', open_brave_url('http://www.google.com/search?ie=utf8&q=%param%')),
         ('kanboard', open_brave_url('http://localhost:8080/')),
         ('links', open_brave_url('https://docs.google.com/spreadsheets/d/(sheet id)/edit?gid=0#gid=0')),
+        ('mercari', open_brave_url('https://jp.mercari.com')),
         ('qiita', open_brave_url('https://qiita.com/tontoroRR')),
         ('scoop', open_brave_url('https://scoop.sh/#/apps?q=%param%')),
         ('youtube', search_youtube),
