@@ -1,36 +1,37 @@
 -- efm-langserver
 
 local options = {
-	encoding = "utf-8",
-	fileencoding = "utf-8",
-	-- encodings = "utf-8,euc-jp,sjis",
-	fileencodings = "utf-8,euc-jp,sjis",
+  encoding = "utf-8",
+  fileencoding = "utf-8",
+  -- encodings = "utf-8,euc-jp,sjis",
+  fileencodings = "utf-8,euc-jp,sjis",
   fileformats = 'unix,dos',
-	backup = false,
-	hlsearch = true,
-	ignorecase = true,
-	wrap = false,
+  backup = false,
+  hlsearch = true,
+  ignorecase = true,
+  wrap = false,
   swapfile = false,
-	smartindent = true,
-	termguicolors = true,
-	syntax = 'on',
+  smartindent = true,
+  termguicolors = true,
+  syntax = 'on',
 
-	expandtab = true,
-	tabstop = 2,
-	shiftwidth = 2,
-	softtabstop = 2,
+  expandtab = true,
+  tabstop = 2,
+  shiftwidth = 2,
+  softtabstop = 2,
 
-	cmdheight = 1,
-	number = true,
-	cursorline = true,
+  cmdheight = 1,
+  number = true,
+  cursorline = true,
 
-	guifont = "Maple Mono NF:h9.5",
-	splitbelow = true,
-	splitright = true,
+  guifont = "Maple Mono NF:h9.5",
+  splitbelow = true,
+  splitright = true,
 }
 
--- set python
-vim.g.python3_host_prog = '/home/tontoro/.asdf/shims/python3'
+-- set lua, python
+vim.g.lua_host_prog = '/home/vagrant/.asdf/installs/lua/5.1.5/bin/lua'
+vim.g.python3_host_prog = '/home/vagrant/.asdf/shims/python3'
 
 -- set colorscheme
 vim.cmd.colorscheme 'habamax'
@@ -41,61 +42,56 @@ vim.opt.fillchars.eob = "\\ "
 vim.cmd([[highlight winseparator guifg=fg guibg=bg]])
 
 for k, v in pairs(options) do
-	vim.opt[k] = v
+  vim.opt[k] = v
 end
 
 vim.g.mapleader = ";"
 
 -- key mapping
-function map_keys (ary_km, cmd)
-	-- ary_km (modes='n,g,v,i,t':'n', key, action, opt(silent)=true/false:true)
-	local opts = { noremap = true, silent = true }
-	local ns_opts = { noremap = true, silent = false }
-	cmd = cmd or vim.keymap.set -- vim.api.nvim_set_keymap
+function map_keys (keymaps, cmd) 
+  -- keymaps (modes='n,g,v,i,t':'n', key, action, opt(silent)=true/false:true)
+  local opts = { noremap = true, silent = true }
+  local ns_opts = { noremap = true, silent = false }
+  cmd = cmd or vim.keymap.set -- vim.api.nvim_set_keymap
 
-	for i=1, #ary_km do
-		km = ary_km[i]
-		if #km == 2 then
-			modes, key, action, opt = 'n', km[1], km[2], opts
-		elseif #km == 3 then
-			modes, key, action, opt = km[1], km[2], km[3], opts
-		else -- #km == 4
-			modes, key, action, opt = km[1], km[2], km[3], (km[4] and opts or ns_opts)
-		end
-		if type(modes) ~= 'table' then
-			modes = {modes}
-		end
-		for i = 1, #modes do
-			cmd(modes[i], key, action, opt)
-		end
-	end
+  for _, keymap in ipairs(keymaps) do
+    local modes = keymap[3] and keymap[1] or 'n'
+    local key = keymap[3] and keymap[2] or keymap[1]
+    local action = keymap[3] or keymap[2]
+    local opt = (#keymap == 3 or keymap[4]) and opts or ns_opts
+
+    modes = type(modes) == 'table' and modes or { modes }
+    for _, mode in ipairs(modes) do
+      cmd(mode, key, action, opt)
+    end
+  end
 end
 
 local global_keymaps = {
-	-- tile ops
-	{'<M-h>', '<C-w>h'}, -- km
-	{'<M-j>', '<C-w>j'}, -- km
-	{'<M-k>', '<C-w>k'}, -- km
-	{'<M-l>', '<C-w>l'}, -- km
-	{'<tab>', '<C-w>w'}, -- km
-	{'<S-tab>', '<C-w>W'}, -- km
-	{'<M-S-h>', '<C-w><'}, -- km
-	{'<M-S-k>', '<C-w>+'}, -- km
-	{'<M-S-j>', '<C-w>-'}, -- km
-	{'<M-S-l>', '<C-w>>'}, -- km
-	{[[<M-\>]], ':vsplit<CR>'}, -- km
-	{[[<M-->]], ':split<CR>'}, -- km
-	{[[<M-S-->]], '<C-w>='}, -- km
-	{'<C-[>', '<Esc>'}, -- km
-	-- tab ops
-	{'<M-d>', ':tabnext<CR>'}, --km
-	-- remove highlight
-	{'zz', ':nohlsearch<CR>'}, -- km
-	-- test
-	-- {'v', 'y', ':w !clip.exe<return><return>'}, -- km
-	{'<leader><Space>', ':e#<CR>' }, -- km
-	{'<leader>fo', ':tab split<CR>' }, -- km
-	-- {'<leader><leader>', ':BlinkCursor<CR>' }, -- km
+  -- tile ops
+  {'<M-h>', '<C-w>h'},
+  {'<M-j>', '<C-w>j'},
+  {'<M-k>', '<C-w>k'},
+  {'<M-l>', '<C-w>l'},
+  {'<tab>', '<C-w>w'},
+  {'<S-tab>', '<C-w>W'},
+  {'<M-S-h>', '<C-w><'},
+  {'<M-S-k>', '<C-w>+'},
+  {'<M-S-j>', '<C-w>-'},
+  {'<M-S-l>', '<C-w>>'},
+  {[[<M-\>]], ':vsplit<CR>'},
+  {[[<M-->]], ':split<CR>'},
+  {[[<M-S-->]], '<C-w>='},
+  {'<C-[>', '<Esc>'},
+  -- tab ops
+  {'<M-d>', ':tabnext<CR>'},
+  -- remove highlight
+  {'zz', ':nohlsearch<CR>'},
+  -- test
+  -- {'v', 'y', ':w !clip.exe<return><return>'},
+  {'<leader><Space>', ':e#<CR>' },
+  {'<leader>fo', ':tab split<CR>' },
+  -- {'<leader><leader>', ':BlinkCursor<CR>' },
 }
 map_keys(global_keymaps)
 
@@ -105,22 +101,22 @@ map_keys(global_keymaps)
 -- lazy.vim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
 
 vim.opt.rtp:prepend(lazypath)
 
 -- plugins
 require("lazy").setup({
-	{
-    'nvim-lualine/lualine.nvim',
+  {
+    'nvim-lualine/lualine.nvim', 
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function ()
       require('lualine').setup {
@@ -140,7 +136,7 @@ require("lazy").setup({
   {
     'tpope/vim-scriptease', 'neoclide/coc.nvim',
   },
-  {
+  { 
     'neoclide/coc.nvim',
     event = 'VeryLazy', -- lz
     branch = 'release',
@@ -154,7 +150,7 @@ require("lazy").setup({
     end
   },
   {
-    'nvim-neo-tree/neo-tree.nvim',
+    'nvim-neo-tree/neo-tree.nvim', 
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -226,20 +222,20 @@ require("lazy").setup({
         local configs = require('nvim-treesitter.configs')
         configs.setup({
           ensure_installed = { 'nu', 'json', 'vim', 'lua', 'python', 'yaml', 'json', 'markdown' },
-				  sync_install = false,
-				  highlight = {
+          sync_install = false,
+          highlight = {
             enable = true,
           },
-				  indent = { enable = true },
-			  })
-		  end
+          indent = { enable = true },
+        })
+      end
       -- fold
       vim.o.foldmethod = 'expr'
       vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-	  end
+    end
   },
   { 'mfussenegger/nvim-dap', dependencies = { 'rcarriga/nvim-dap-ui', }, },
-  {
+  { 
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy', -- lz
     dependencies = {
@@ -339,15 +335,15 @@ require("lazy").setup({
   },
   {
     'fannheyward/telescope-coc.nvim',
-	  config = function ()
-		  require('telescope').setup ({
-			  coc = {
-				  theme = 'ivy',
-				  prefer_locations = true,
-			  }
-		  })
-		  require('telescope').load_extension('coc')
-	  end
+    config = function ()
+      require('telescope').setup ({
+        coc = {
+          theme = 'ivy',
+          prefer_locations = true,
+        }
+      })
+      require('telescope').load_extension('coc')
+    end
   },
   {
     'tontoroRR/cder.nvim',
@@ -402,22 +398,22 @@ require("lazy").setup({
     end
   },
   {
-	  'folke/which-key.nvim',
+    'folke/which-key.nvim',
     dependencies = { 'echasnovski/mini.icons', version = false },
     event = 'VeryLazy', -- lz
-	  init = function()
-		  vim.o.timeout = true
-		  vim.o.timeoutlen = 500
-	  end,
-	  opts = {}
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 500
+    end,
+    opts = {}
   },
   {
-	  'krischik/vim-tail',
+    'krischik/vim-tail',
     event = 'VeryLazy', -- lz
-	  config = function ()
-		  vim.g.Tail_Height = 10
-		  vim.g.Tail_Center_Win = 1
-	  end
+    config = function ()
+      vim.g.Tail_Height = 10
+      vim.g.Tail_Center_Win = 1
+    end
   },
   { 'nvie/vim-flake8', event = 'VeryLazy', ft = 'python', }, -- lz
   { 'tell-k/vim-autopep8', event = 'VeryLazy', ft = 'python', },-- lz
@@ -440,13 +436,13 @@ require("lazy").setup({
         group = augroup,
         callback = function(_)
           if vim.tbl_contains(ignore_buftypes, vim.bo.buftype)
-            then
-              vim.w.focus_disable = true
-            else
-              vim.w.focus_disable = false
-            end
-          end,
-          desc = 'Disable focus autoresize for BufType',
+          then
+            vim.w.focus_disable = true
+          else
+            vim.w.focus_disable = false
+          end
+        end,
+        desc = 'Disable focus autoresize for BufType',
       })
 
       vim.api.nvim_create_autocmd('FileType', {
@@ -559,8 +555,8 @@ require("lazy").setup({
       for i = 1, #keys do
         local key = keys:sub(i,i)
         map('n', string.format('<leader>%s', key),
-        function () bmui.nav_file(i) end,
-        opts
+          function () bmui.nav_file(i) end,
+          opts
         )
       end
       -- Just the menu
@@ -633,22 +629,22 @@ require("lazy").setup({
 
 -- User defined commands
 function blink_cursor()
-	local t = 300
-	for i = 1, 3 do
-		vim.opt['cursorline'] = false
-		vim.api.nvim_command('redraw')
-		vim.wait(t)
-		vim.opt['cursorline'] = true
-		vim.api.nvim_command('redraw')
-		vim.wait(t)
-	end
+  local t = 300
+  for i = 1, 3 do
+    vim.opt['cursorline'] = false
+    vim.api.nvim_command('redraw')
+    vim.wait(t)
+    vim.opt['cursorline'] = true
+    vim.api.nvim_command('redraw')
+    vim.wait(t)
+  end
 end
 
 --[[
 function xxx()
   local buf = vim.api.nvim_buf_get_name(0)
-  local profile = 'D:\Users\username\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
-  -- local
+  local profile = 'D:\Users\masaaki\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+  -- local 
 end
 ]]
 
@@ -670,8 +666,8 @@ vim.api.nvim_create_autocmd({'BufEnter', 'FileType'}, {
   end,
 })
 vim.api.nvim_create_autocmd({ 'BufWrite' }, {
-    pattern = '*.py',
-    command = ':Flake',
+  pattern = '*.py',
+  command = ':Flake',
 })
 
 -- Use powershell for windows
