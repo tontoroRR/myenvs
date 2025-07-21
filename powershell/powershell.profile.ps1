@@ -28,11 +28,11 @@ Set-Alias vim nvim
 
 # Fzf + Ctrl-r
 Set-PSReadLineKeyHandler -Chord Ctrl+r -ScriptBlock {
-  Get-Content (Get-PSReadLineOption).HistorySavePath > $ENV:USERPROFILE/tmp/ctrlr 
+  Get-Content (Get-PSReadLineOption).HistorySavePath > $ENV:USERPROFILE/tmp/ctrlr
   $command = tac $ENV:USERPROFILE/tmp/ctrlr | awk '!a[$0]++' | fzf -e +s
   Remove-Item $ENV:USERPROFILE/tmp/ctrlr
   [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-  if (!$command) { return } 
+  if (!$command) { return }
   [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command)
 }
 
@@ -46,5 +46,5 @@ Set-PSReadlineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 Set-PSReadlineKeyHandler -Key 'Ctrl+a' -Function BeginningOfLine
 Set-PSReadlineKeyHandler -Key 'Ctrl+e' -Function EndOfLine
 
-cd D:/Users/(name)
+# cd D:/Users/(name)
 # ~

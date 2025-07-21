@@ -55,14 +55,22 @@ function ge() {
   explorer $(ghq list --full-path | fzf)
 }
 
+function which($cmd) {
+  Get-Command $cmd
+}
+
 # starship
 $env:STARSHIP_CONFIG=$env:USERPROFILE + "\.config\starship\config.toml"
 Invoke-Expression (&starship init powershell)
 
+# Post-Git
 Import-Module posh-git
 
 # Key Shortcut
 Set-PSReadLineKeyHandler -Chord Ctrl+f -Function ForwardChar
+
+# Stupid Fast, Scoop Utilities
+Invoke-Expression (&sfsu hook)
 
 # For zoxide v0.8.0+
 # zoxide configuration should be last
